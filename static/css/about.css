@@ -1,0 +1,218 @@
+/*
+about.css
+
+About Page Stylesheet for Nexus-AI
+
+Purpose:
+This CSS file styles the "About" page of the Nexus-AI attendance system. The page serves as an introduction to the platform, 
+providing information about its mission, features, and the team behind it. The design focuses on clarity, structure, and accessibility.
+
+Sections:
+- Root Variables (global color theme for consistency)
+- Base Page Styling (typography, text alignment, body background)
+- Navigation Bar (header with branding and links)
+- Hero Section (top banner with heading and subtext)
+- "Who We Are" Section (text and image layout about the team/system)
+- Feature Grid (functional highlights displayed in a 3-column layout)
+- Mission & Vision (cards displaying goals and philosophy)
+- Footer (closing branding/info section)
+
+Styles:
+Uses modern CSS layout techniques (Flexbox and Grid), Google Fonts, FontAwesome icons, and consistent theming 
+via CSS variables. Designed to be clean, responsive, and accessible.
+*/
+
+/* === Global Theme Colors (Consistent Across Site) === */
+:root {
+    --background: #FDFDFD;
+    --primary-dark: #1D3557;
+    --primary-dark-gradient-1: #2C3E50;
+    --primary-dark-gradient-2: #34495E;
+    --primary-dark-gradient-3: #4A647E;
+    --primary-light: #F5F5F5;
+    --text-light: #E0E0E0;
+}
+
+/* === Base Styling for Page === */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background);
+    color: var(--primary-dark);
+    text-align: center;
+}
+
+/* === Navigation Bar Styling === */
+.navbar {
+    background: var(--primary-dark);
+    padding: 15px;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: white;
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    color: white;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--primary-light);
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    margin: auto;
+}
+
+.navbar ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.navbar ul li {
+    display: inline;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.navbar a.active, .navbar a:hover {
+    color: var(--primary-light);
+}
+
+/* === Hero Section Banner === */
+.hero {
+    background: linear-gradient(45deg, var(--primary-dark-gradient-1), var(--primary-dark-gradient-2));
+    height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.hero-content p {
+    font-size: 1.5rem;
+}
+
+/* === "Who We Are" Section Layout === */
+.who-we-are {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 80px 10%;
+    background: var(--primary-light);
+}
+
+.image-box {
+    width: 50%;
+}
+
+.image-box img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.text-box {
+    width: 45%;
+    text-align: left;
+}
+
+.text-box h2 {
+    font-size: 2.5rem;
+    color: var(--primary-dark);
+}
+
+/* === Feature Grid: Platform Functionalities === */
+.functionalities {
+    padding: 80px 10%;
+    background: var(--primary-dark);
+    color: white;
+}
+
+.functionalities h2 {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    text-align: center;
+}
+
+.grid-item {
+    background: var(--primary-dark-gradient-3);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.grid-item i {
+    font-size: 2rem;
+    color: var(--primary-light);
+    margin-bottom: 10px;
+}
+
+.grid-item h3 {
+    color: white;
+}
+
+/* === Mission and Vision Cards === */
+.mission-vision {
+    padding: 80px 10%;
+    background: var(--primary-dark-gradient-2);
+    color: white;
+}
+
+.mission-vision .container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+
+.mission-vision .card {
+    background: var(--primary-dark);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 300px;
+}
+
+.mission-vision .card i {
+    font-size: 2.5rem;
+    color: var(--primary-light);
+    margin-bottom: 15px;
+}
+
+.mission-vision .card h3 {
+    color: var(--primary-light);
+}
+
+/* === Footer === */
+footer {
+    text-align: center;
+    padding: 20px;
+    background: var(--primary-dark-gradient-1);
+    color: white;
+}

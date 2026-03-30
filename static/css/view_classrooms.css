@@ -1,0 +1,137 @@
+/*
+view_classrooms.css
+
+View Classrooms & Live Attendance – Nexus-AI
+
+Purpose:
+This stylesheet styles the "View Classrooms" page, including the live webcam feed,
+attendance status table, date picker, and interactive buttons.
+
+Sections:
+- Theme Variables
+- Base Styles
+- Headings
+- Buttons
+- Video Feed
+- Attendance Container
+- Table Styling
+- Status Coloring
+- Date Picker
+- Icons
+*/
+
+/* === Theme Variables (Shared System Colors) === */
+:root {
+    --primary-dark: #1D3557;               /* Deep blue for branding */
+    --primary-dark-gradient-1: #2C3E50;    /* Gradient shade 1 */
+    --primary-dark-gradient-2: #34495E;    /* Gradient shade 2 */
+    --text-dark: #E0E0E0;                  /* Light text color */
+    --light-bg: #F5F5F5;                   /* Light background (used in hover) */
+    --green: #28a745;                      /* Green for "Present" status */
+    --red: #dc3545;                        /* Red for "Absent" status */
+}
+
+/* === Base Page Styling === */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(45deg, var(--primary-dark), var(--primary-dark-gradient-1), var(--primary-dark-gradient-2));
+    color: var(--text-dark);              /* Global text color */
+    text-align: center;                   /* Centered headings and layout */
+}
+
+/* === Headings (Page Titles) === */
+h1 {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* === General Button Styles === */
+button {
+    background-color: var(--primary-dark-gradient-1);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin: 10px;
+}
+
+/* Hover effect for buttons */
+button:hover {
+    background-color: var(--light-bg);
+    color: var(--primary-dark);
+}
+
+/* === Live Video Feed Container === */
+#videoFeed {
+    width: 640px;
+    height: 480px;
+    border-radius: 10px;                      /* Soft rounded corners */
+    border: 2px solid var(--primary-dark);    /* Defined border for focus */
+    margin-top: 20px;
+}
+
+/* === Attendance Table Container === */
+.attendance-container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 30px auto;
+    background: var(--primary-dark-gradient-2); /* Dark section background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Soft card effect */
+}
+
+.attendance-container h2 {
+    color: white;
+}
+
+/* === Table Styling === */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid var(--primary-dark);
+    text-align: left;
+    color: var(--text-dark); /* Light text for dark backgrounds */
+}
+
+/* Table Headers */
+th {
+    background: var(--primary-dark-gradient-1); /* Dark header */
+    color: white;
+}
+
+/* === Attendance Status Cell Coloring === */
+.present {
+    background-color: rgba(40, 167, 69, 0.3);  /* Light green background */
+    color: var(--green);                       /* Strong green text */
+    font-weight: bold;
+}
+
+.absent {
+    background-color: rgba(220, 53, 69, 0.3);  /* Light red background */
+    color: var(--red);                         /* Strong red text */
+    font-weight: bold;
+}
+
+/* === Date Picker Styling === */
+.date-picker {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* === Status Icons (Optional) === */
+.status-icon {
+    margin-right: 8px; /* Space between icon and text */
+}

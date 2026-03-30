@@ -1,0 +1,51 @@
+<!-- 
+settings.html
+
+This page allows an administrator to update their account information.
+
+Features:
+⚙️ Admin can:
+   - Update their email address (pre-filled from the current session).
+   - Change their password.
+📝 The form submits via POST method to the server for processing and saving changes.
+
+Styling:
+- Uses `admin.css` for layout and appearance.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+
+    <!-- Link to Admin-specific CSS stylesheet for layout and styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+
+    <!-- === Page Title === -->
+    <h1>⚙️ Admin Settings</h1>
+
+    <!-- 
+        === Settings Form ===
+        Allows the admin to update their email and password.
+        The form values are sent to the server via POST for processing.
+    -->
+    <form method="post">
+
+        <!-- Email Field (pre-filled with current email from admin object) -->
+        <label>Email</label>
+        <input type="email" name="email" value="{{ admin.email }}" required>
+
+        <!-- Password Field (must be filled to confirm update) -->
+        <label>New Password</label>
+        <input type="password" name="password" required>
+
+        <!-- Submit Button to save changes -->
+        <button type="submit">Save Changes</button>
+    </form>
+
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!-- 
+messages.html
+
+This page displays all absence messages sent by students to professors.
+It allows professors to:
+- View each message with details (student name, class, message, timestamp)
+- See whether the message has been marked as seen or not
+- Mark new/unseen messages as "Seen" via a button (which updates the status using JavaScript and backend logic)
+
+The UI includes a styled table with all messages
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ✅ Basic Page Setup -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages</title>
+
+    <!-- ✅ Linking external CSS for consistent styling (from professor.css) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/professor.css') }}">
+</head>
+<body>
+
+    <!-- ✅ Top Navigation Bar with Page Title and Back Button -->
+    <header class="navbar">
+        <div class="container">
+            <!-- Page Title -->
+            <h1>📨 Student Absence Messages</h1>
+
+            <!-- Back Button to return to Professor Dashboard -->
+            <a href="{{ url_for('professor_dashboard') }}" class="back-btn">⬅️ Back to Dashboard</a>
+        </div>
+    </header>
+
+    <!-- ✅ Main Content Area for Displaying Messages -->
+    <div class="container">
+        <!-- Table to display student messages -->
+        <table class="messages-table">
+            <thead>
+                <!-- Table headers for identifying message attributes -->
+                <tr>
+                    <th>Student Name</th>
+                    <th>Class ID</th>
+                    <th>Message</th>
+                    <th>Timestamp</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- ✅ Loop through each message retrieved from the server -->
+                {% for message in messages %}
+                <tr id="message-{{ message[0] }}"> <!-- Row ID based on message ID for targeting -->
+                    <!-- Student Name -->
+                    <td>{{ message[1] }}</td>
+
+                    <!-- Class ID (which class the message is about) -->
+                    <td>{{ message[2] }}</td>
+
+                    <!-- Message content sent by the student -->
+                    <td>{{ message[3] }}</td>
+
+                    <!-- Timestamp when the message was received -->
+                    <td>{{ message[4] }}</td>
+
+                    <!-- Status Column (Seen or Not Seen) -->
+                    <td>
+                        {% if message[5] == 0 %}
+                            <!-- Button to mark message as seen (if not yet marked) -->
+                            <button class="mark-seen" data-message-id="{{ message[0] }}">✅ Mark as Seen</button>
+                        {% else %}
+                            <!-- Message already marked as seen -->
+                            ✔️ Seen
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ✅ JavaScript to Handle "Mark as Seen" Action -->
+    <script>
+        // Loop through all "Mark as Seen" buttons
+        document.querySelectorAll(".mark-seen").forEach(button => {
+            // Add click event listener for each button
+            button.addEventListener("click", function() {
+                // Get message ID from data attribute
+                let messageId = this.getAttribute("data-message-id");
+
+                // Send POST request to the backend to update the message status
+                fetch(`/mark-message-seen/${messageId}`, {
+                    method: "POST"
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // If update is successful, update the UI
+                    if (data.success) {
+                        // Replace the button with the "Seen" text
+                        document.getElementById(`message-${messageId}`).querySelector(".mark-seen").innerText = "✔️ Seen";
+                    }
+                })
+                .catch(error => console.error("❌ Error:", error)); // Log error if any
+            });
+        });
+    </script>
+
+</body>
+</html>

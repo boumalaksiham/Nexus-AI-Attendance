@@ -1,0 +1,79 @@
+<!-- 
+register_student.html
+
+This page allows new students to register by filling out a form with essential details.
+
+Features:
+👤 Accepts user inputs for:
+- Enrollment Number (unique student identifier)
+- Full Name
+- Email
+- Password
+- Professor ID (for associating the student with a class or professor)
+
+🧾 The form data is submitted via POST to the `register_student_route`.
+🔙 A back navigation link is provided to return to the homepage.
+
+Styling:
+- Inherits visual styling from `css/student_styles.css`.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- === Basic Metadata for Page Rendering === -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Register New Student</title>
+
+    <!-- === Link to External CSS Stylesheet for Student Pages === -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student_styles.css') }}">
+</head>
+<body>
+
+    <!-- === Navigation Bar === -->
+    <!-- Provides a back link to return to the home page -->
+    <nav>
+        <a href="{{ url_for('home') }}" class="back-arrow">← Back to Home</a>
+    </nav>
+
+    <!-- === Registration Form Container === -->
+    <div class="register-container">
+        <h2>Register New Student</h2>
+
+        <!-- 
+            === Registration Form ===
+            Fields:
+            - Enrollment Number (unique student ID)
+            - Full Name
+            - Email Address
+            - Password
+            - Professor ID (for class association)
+
+            The form submits via POST to the route 'register_student_route'.
+        -->
+        <form action="{{ url_for('register_student_route') }}" method="POST">
+
+            <!-- Student's Unique Enrollment Number -->
+            <input type="text" id="enrollment" name="enrollment" placeholder="Enrollment Number" required>
+
+            <!-- Full Name of the Student -->
+            <input type="text" id="name" name="name" placeholder="Full Name" required>
+
+            <!-- Student's Email -->
+            <input type="email" id="email" name="email" placeholder="Email" required>
+
+            <!-- Account Password -->
+            <input type="password" id="password" name="password" placeholder="Password" required>
+
+            <!-- Associated Professor's ID -->
+            <input type="text" id="professor_id" name="professor_id" placeholder="Professor ID" required>
+
+            <!-- Submit Button -->
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+</body>
+</html>

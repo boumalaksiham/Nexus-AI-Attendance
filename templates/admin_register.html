@@ -1,0 +1,65 @@
+<!-- 
+admin_register.html
+
+📄 Description:
+This page allows a new admin to register by submitting their email and password.
+
+🔧 Features:
+- Form to collect admin credentials
+- Navigation link to return to the home page
+- Link to redirect to login page if already registered
+
+👤 User Role: Admin
+🎯 Route: /admin-register (POST)
+🎨 Stylesheet: styles.css
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- === Basic Meta Configuration === -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Registration</title>
+
+    <!-- === External Stylesheet === -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+    <!-- === Navigation: Link to Go Back to Homepage === -->
+    <nav>
+        <a href="{{ url_for('home') }}" class="back-arrow">← Back to Home</a>
+    </nav>
+
+    <!-- === Main Container for the Registration Form === -->
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Admin Registration</h2>
+
+            <!-- === Registration Form === -->
+            <form action="{{ url_for('admin_register') }}" method="POST">
+
+                <!-- === Email Input Field === -->
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" required>
+                </div>
+
+                <!-- === Password Input Field === -->
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" required>
+                </div>
+
+                <!-- === Submit Button === -->
+                <button type="submit" class="btn-primary">Register</button>
+            </form>
+
+            <!-- === Link to Login if Already Registered === -->
+            <p>Already have an account? <a href="{{ url_for('admin_login') }}">Login here</a></p>
+        </div>
+    </div>
+</body>
+</html>

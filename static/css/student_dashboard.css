@@ -1,0 +1,510 @@
+/*
+student_dashboard.css
+
+🎓 Nexus-AI Student Dashboard Stylesheet
+
+Purpose:
+This stylesheet defines the layout and style of the student dashboard in Nexus-AI, including the sidebar navigation, 
+chatbot interaction, recent activities display, inbox popup, and absence reporting popup.
+
+Sections:
+- Google Font Import
+- Root Color Variables
+- Page and Sidebar Layout
+- Main Content Area
+- Welcome Message and Activity Feed
+- Dropdown Settings and Forms
+- Absence Reporting Chat Popup
+- Inbox Overlay and Popup
+- Dashboard Content Split
+- Chatbot Interface
+*/
+
+/* === Google Font Import === */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* === Theme Variables === */
+:root {
+    --background: #FDFDFD;
+    --primary-dark: #1D3557;
+    --primary-dark-gradient-1: #2C3E50;
+    --primary-dark-gradient-2: #34495E;
+    --primary-dark-gradient-3: #4A647E;
+    --primary-light: #F5F5F5;
+    --text-dark: #E0E0E0;
+}
+
+/* === Overall Page Layout === */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background: linear-gradient(45deg, var(--primary-dark), var(--primary-dark-gradient-1), var(--primary-dark-gradient-2));
+    color: var(--text-dark);
+    height: 100vh;
+    overflow-x: hidden;
+}
+
+/* === Sidebar === */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background: linear-gradient(to bottom, var(--primary-dark), var(--primary-dark-gradient-1));
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 0 20px 20px 0;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+    position: fixed;
+}
+
+/* === Profile Section in Sidebar === */
+.profile-section {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile-pic {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 3px solid var(--primary-light);
+    object-fit: cover;
+}
+
+.profile-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-dark);
+    margin-top: 10px;
+}
+
+/* === Navigation Menu in Sidebar === */
+.nav-menu {
+    width: 100%;
+}
+
+.nav-link {
+    display: block;
+    padding: 12px;
+    background: var(--primary-dark-gradient-2);
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.nav-link:hover {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+/* === Logout Button in Sidebar === */
+.logout {
+    margin-top: auto;
+    background: #D9534F;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    padding: 12px;
+    border-radius: 8px;
+    transition: 0.3s ease-in-out;
+}
+
+.logout:hover {
+    background: #C9302C;
+}
+
+/* === Main Content Area === */
+.main-content {
+    margin-left: 270px;
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+/* === Welcome Message === */
+.welcome-message {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--text-dark);
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* === Recent Activities Section === */
+.recent-activities {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 800px;
+    margin-top: 20px;
+    margin-left: 200px;
+}
+
+.recent-activities h2 {
+    font-size: 18px;
+    color: var(--primary-dark);
+}
+
+.recent-activities ul {
+    list-style: none;
+    padding: 0;
+}
+
+.recent-activities li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    color: var(--primary-dark-gradient-3);
+}
+
+.recent-activities li:last-child {
+    border-bottom: none;
+}
+
+/* === Settings Dropdown === */
+.settings-dropdown {
+    width: 100%;
+    text-align: center;
+    position: relative;
+}
+
+.dropdown-btn {
+    width: 100%;
+    background: var(--primary-dark-gradient-1);
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Dropdown Content Styling */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 300px;
+    background: var(--primary-light);
+    padding: 15px;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+/* Settings Form */
+.dropdown-content form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.dropdown-content label {
+    font-weight: bold;
+    color: black;
+    text-align: left;
+    width: 100%;
+}
+
+.dropdown-content input,
+.dropdown-content button {
+    width: 90%;
+    max-width: 250px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--primary-dark);
+    background: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+.dropdown-content button {
+    background: var(--primary-dark-gradient-1);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.dropdown-content button:hover {
+    background: var(--primary-dark-gradient-2);
+}
+
+.dropdown-content.show {
+    display: block;
+}
+
+/* === Floating Absence Chat Button === */
+.absence-chat-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--primary-dark);
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: 0.3s ease-in-out;
+}
+
+.absence-chat-button:hover {
+    background: var(--primary-dark-gradient-2);
+}
+
+/* === Floating Absence Popup === */
+.absence-popup {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    background: var(--primary-dark);
+    color: var(--text-dark);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    display: none;
+    flex-direction: column;
+    padding: 15px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.absence-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--primary-light);
+}
+
+.absence-popup-close {
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: var(--text-dark);
+}
+
+.absence-popup form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.absence-popup select, 
+.absence-popup textarea {
+    padding: 10px;
+    border: 1px solid var(--primary-light);
+    border-radius: 5px;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+.absence-popup button {
+    background: var(--primary-dark-gradient-1);
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+.absence-popup button:hover {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+/* === Fade-in Animation for Popups === */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* === General Form Fields === */
+input, textarea, select {
+    width: 100%;
+    padding: 10px;
+    margin: 0;
+    border-radius: 5px;
+    border: 1px solid var(--primary-dark);
+    background: var(--primary-light);
+    color: black;
+}
+
+input::placeholder, 
+textarea::placeholder {
+    color: #333;
+}
+
+label {
+    color: black !important;
+    font-weight: bold;
+}
+
+/* === Inbox Overlay (background blur) === */
+.inbox-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+}
+
+/* === Inbox Popup Box === */
+.inbox-popup {
+    display: none;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1000px;
+    max-width: 90vw;
+    height: 1000px;
+    max-height: 90vh;
+    min-width: 400px;
+    min-height: 300px;
+    padding: 15px;
+    background: white;
+    border: 2px solid #444;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    overflow: auto;
+}
+
+/* Inbox Header with Drag Handle */
+.inbox-header {
+    cursor: grab;
+    background: #333;
+    color: #fff;
+    padding: 12px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 18px;
+}
+
+/* Inbox Message Table */
+.inbox-popup table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.inbox-popup table th {
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+}
+
+.inbox-popup table td {
+    color: #222;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 8px 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Inbox Close Button */
+.inbox-close {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: white;
+    position: absolute;
+    right: 15px;
+    top: 10px;
+}
+
+/* === Recent Activities + Chatbot Section === */
+.dashboard-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.recent-activities {
+    flex: 2;
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.chatbot-container {
+    flex: 1;
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    height: 700px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.chatbox-messages {
+    height: 550px;
+    overflow-y: auto;
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+}
+
+/* === Chat Messages === */
+.chat-message {
+    padding: 8px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    max-width: 80%;
+}
+
+.user-message {
+    background: #007bff;
+    color: white;
+    align-self: flex-end;
+}
+
+.ai-message {
+    background: #f1f1f1;
+    align-self: flex-start;
+}
+
+input[type="text"] {
+    width: 80%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+button {
+    padding: 8px 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

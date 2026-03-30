@@ -1,0 +1,301 @@
+<!-- 
+student_dashboard.html
+
+This is the main dashboard for students after logging in. It provides access to:
+Their profile picture and name.
+Inbox with messages from professors and AI assistant.
+List of enrolled classes.
+Attendance chatbot powered by AI.
+Ability to send absence messages to professors.
+Settings to update profile picture and change password.
+
+Also includes:
+- Floating absence message popup.
+- Interactive inbox with date filter.
+- Responsive layout and custom styling from `student_dashboard.css`.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Basic page setup -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+
+    <!-- Link to custom CSS for dashboard styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student_dashboard.css') }}">
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <!-- === Sidebar Navigation === -->
+    <aside class="sidebar">
+        <!-- Profile Picture and Student Name -->
+        <div class="profile-section">
+            <img src="{{ profile_picture }}" alt="Profile Picture" class="profile-pic">
+            <h3 class="profile-name">{{ student_name }}</h3>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="nav-menu">
+            <a href="{{ url_for('student_dashboard') }}" class="nav-link active">📌 Dashboard</a>
+
+            <!-- Inbox Link (with optional unread count badge) -->
+            <a href="{{ url_for('student_inbox') }}" class="nav-link" onclick="event.preventDefault(); fetchInboxMessages(); toggleInbox();">
+                📥 Inbox <span id="unreadCount"></span>
+            </a>
+
+            <!-- Link to student’s enrolled classes -->
+            <a href="{{ url_for('student_classes') }}" class="nav-link">📚 My Classes</a>
+
+            <!-- Settings Dropdown: Profile picture and password update -->
+            <div class="settings-dropdown">
+                <button class="nav-link dropdown-btn">⚙️ Settings</button>
+                <div class="dropdown-content">
+                    <!-- Profile picture update form -->
+                    <form action="{{ url_for('change_profile_picture') }}" method="post" enctype="multipart/form-data">
+                        <label for="profile_picture">Update Profile Picture:</label>
+                        <input type="file" name="profile_picture" accept="image/*">
+                        <button type="submit" class="btn">Update Picture</button>
+                    </form>
+
+                    <!-- Password update form -->
+                    <form action="{{ url_for('change_password') }}" method="post">
+                        <label for="old_password">Change Password:</label>
+                        <input type="password" name="old_password" placeholder="Old Password" required>
+                        <input type="password" name="new_password" placeholder="New Password" required>
+                        <button type="submit" class="btn">Update Password</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Logout Button (stays at bottom of sidebar) -->
+        <a href="{{ url_for('student_logout') }}" class="nav-link logout">🚪 Logout</a>
+    </aside>
+
+    <!-- === Main Dashboard Content === -->
+    <main class="main-content">
+        <h1 class="welcome-message">Welcome, {{ student_name }} 👋</h1>
+
+        <!-- Section: Student’s recent activity log -->
+        <section class="recent-activities">
+            <h2>📜 Recent Activities</h2>
+            <ul>
+                {% for activity in recent_activities %}
+                    <li>{{ activity[0] }} - <span>{{ activity[1] }}</span></li>
+                {% else %}
+                    <li>No recent activities.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <!-- Section: AI-powered chatbot for attendance-related questions -->
+        <section class="chatbot-container">
+            <h2>🤖 Attendance Chatbot</h2>
+            <div class="chatbox-messages" id="chatboxMessages"></div>
+
+            <!-- Chat input + send button -->
+            <input type="text" id="chatInput" placeholder="Ask about your attendance..." onkeypress="handleChat(event)">
+            <button onclick="sendChatMessage()">➤</button>
+
+            <!-- Optional chart canvas shown when AI provides visual response -->
+            <canvas id="attendanceChart" style="display: none;"></canvas>
+        </section>
+    </main>
+</div>
+
+<!-- === Floating Button to Open Absence Message Popup === -->
+<button class="absence-chat-button" onclick="toggleAbsencePopup()">💬</button>
+
+<!-- === Absence Message Form Popup === -->
+<div class="absence-popup" id="absencePopup">
+    <div class="absence-popup-header">
+        <span>📩 Send Absence Message</span>
+        <button class="absence-popup-close" onclick="toggleAbsencePopup()">✖</button>
+    </div>
+
+    <!-- Form: Student sends an absence message to a professor for a selected class -->
+    <form action="{{ url_for('send_absence_message') }}" method="post">
+        <label for="class_id">Select Class:</label>
+        <select id="class_id" name="class_id" required>
+            <option value="">-- Select a class --</option>
+            {% for class in classes %}
+                <option value="{{ class[0] }}">{{ class[1] }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="message">Your Message:</label>
+        <textarea name="message" rows="3" required></textarea>
+
+        <button type="submit">📤 Send</button>
+    </form>
+</div>
+
+<!-- === Inbox Overlay and Popup for Reading Replies === -->
+<div class="inbox-overlay" id="inboxOverlay" onclick="toggleInbox()"></div>
+
+<div class="inbox-popup" id="inboxPopup">
+    <div class="inbox-header">
+        <span>📥 Inbox</span>
+        <button class="inbox-close" onclick="toggleInbox()">✖</button>
+    </div>
+
+    <!-- Filter by date -->
+    <div class="filter-container">
+        <label for="dateFilter">Filter by Date:</label>
+        <input type="date" id="dateFilter" onchange="filterMessagesByDate()">
+    </div>
+
+    <!-- Messages Table -->
+    <section class="card">
+        {% if messages %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Sender</th>
+                    <th>Message</th>
+                    <th>Received At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for message in messages %}
+                <tr data-timestamp="{{ message.timestamp }}">
+                    <td>
+                        {% if message.sender_type == 'ai_agent' %}
+                        🤖 <strong>AI Assistant</strong>
+                        {% elif message.sender_type == 'professor' %}
+                        🎓 <strong>Professor</strong>
+                        {% else %}
+                        👤 <strong>Student</strong>
+                        {% endif %}
+                    </td>
+                    <td>📢 {{ message.message }}</td>
+                    <td>{{ message.timestamp }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No messages received yet.</p>
+        {% endif %}
+    </section>
+</div>
+
+<!-- === JavaScript Section === -->
+<script>
+    // === Chatbot Interaction ===
+    function sendChatMessage() {
+        let chatInput = document.getElementById("chatInput");
+        let message = chatInput.value.trim();
+        if (message === "") return;
+
+        // Display user message
+        let chatbox = document.getElementById("chatboxMessages");
+        chatbox.innerHTML += `<div class="chat-message user-message">${message}</div>`;
+
+        // Extract class name if mentioned (e.g., "How was I in MATH101?")
+        let classMatch = message.match(/in (\w+)/i);
+        let class_name = classMatch ? classMatch[1].toUpperCase() : null;
+
+        // Send message to backend
+        fetch("/chatbot-response", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: message, class_name: class_name })
+        })
+        .then(response => response.json())
+        .then(data => {
+            chatbox.innerHTML += `<div class="chat-message ai-message">${data.response}</div>`;
+            if (data.graph) {
+                chatbox.innerHTML += `<img src="${data.graph}" alt="Attendance Graph" style="width:100%;">`;
+            }
+            chatInput.value = "";
+            chatbox.scrollTop = chatbox.scrollHeight;
+        })
+        .catch(error => console.error("❌ Error:", error));
+    }
+
+    function handleChat(event) {
+        if (event.key === "Enter") sendChatMessage();
+    }
+
+    // === Attendance Graph using Chart.js (optional use) ===
+    function showAttendanceGraph(data) {
+        let chartCanvas = document.getElementById("attendanceChart");
+        chartCanvas.style.display = "block";
+        new Chart(chartCanvas, {
+            type: "bar",
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: "Attendance Overview",
+                    backgroundColor: "#4A69BD",
+                    data: data.values
+                }]
+            }
+        });
+    }
+
+    // === Toggle Absence Popup Visibility ===
+    function toggleAbsencePopup() {
+        let popup = document.getElementById("absencePopup");
+        popup.style.display = (popup.style.display === "flex") ? "none" : "flex";
+    }
+
+    // === Fetch and Inject Inbox Messages ===
+    function fetchInboxMessages() {
+        fetch("{{ url_for('student_inbox') }}")
+        .then(response => response.text())
+        .then(data => {
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(data, "text/html");
+            let messagesList = doc.querySelector("#inboxMessages");
+            if (messagesList) {
+                document.querySelector("#inboxMessages").innerHTML = messagesList.innerHTML;
+            }
+        })
+        .catch(error => console.error("Error fetching inbox messages:", error));
+    }
+
+    // === Show/Hide Inbox Popup ===
+    function toggleInbox() {
+        let inboxPopup = document.getElementById("inboxPopup");
+        let overlay = document.getElementById("inboxOverlay");
+
+        if (inboxPopup.style.display === "block") {
+            inboxPopup.style.display = "none";
+            overlay.style.display = "none";
+        } else {
+            inboxPopup.style.display = "block";
+            overlay.style.display = "block";
+        }
+    }
+
+    // === Filter Inbox Messages by Date ===
+    function filterMessagesByDate() {
+        let dateInput = document.getElementById("dateFilter").value;
+        let rows = document.querySelectorAll(".inbox-popup table tbody tr");
+
+        rows.forEach(row => {
+            let timestamp = row.getAttribute("data-timestamp");
+            let messageDate = timestamp?.slice(0, 10);
+            row.style.display = (messageDate === dateInput || !dateInput) ? "table-row" : "none";
+        });
+    }
+
+    // === On Page Load: Setup filters and unread count ===
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelector(".dropdown-btn").addEventListener("click", function () {
+            document.querySelector(".dropdown-content").classList.toggle("show");
+        });
+
+        let unreadMessages = document.querySelectorAll(".unread").length;
+        document.getElementById("unreadCount").innerText = unreadMessages > 0 ? `(${unreadMessages})` : "";
+    });
+</script>
+
+</body>
+</html>

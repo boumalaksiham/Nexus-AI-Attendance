@@ -1,0 +1,126 @@
+<!-- 
+index.html
+
+This is the landing page for Nexus-AI, the AI-powered attendance tracking platform.
+
+🌟 Features:
+- Bootstrap-powered responsive design
+- Hero section with branding and call-to-action
+- Sections for Professors and Students
+- Smooth scroll navigation using vanilla JS
+- Links to login and registration pages
+- Wave SVG divider for modern UI effect
+
+Used by: All users (unauthenticated)
+CSS: style.css (custom styling)
+JS: Bootstrap, smooth scroll
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- === Basic Metadata === -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus-AI</title>
+
+    <!-- === Bootstrap CSS for Layout & Responsiveness === -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- === Custom Global CSS === -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- === Smooth Scrolling Script for Anchor Links === -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute("href")).scrollIntoView({
+                        behavior: "smooth"
+                    });
+                });
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+    <!-- === Navigation Bar === -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <!-- Logo and Branding -->
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='images/Nexus.png') }}" alt="Nexus-AI Logo"
+                     height="80" style="max-width: 200px; object-fit: contain;">
+            </a>
+
+            <!-- Collapsible Navigation for Mobile -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Navigation Links -->
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#professor-section">Professor</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#student-section">Student</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_login') }}">Admin Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- === Hero Section === -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="container text-center hero-content">
+            <h1>Nexus-AI</h1>
+            <p>Seamless, Accurate, and Hassle-Free Attendance Tracking</p>
+            <a href="{{ url_for('about') }}" class="btn btn-primary">Learn More</a>
+        </div>
+
+        <!-- === Animated Wave Divider === -->
+        <div class="wave-container">
+            <svg class="wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+                <path fill="#E3F2FD" fill-opacity="1"
+                      d="M0,160L60,154.7C120,149,240,139,360,133.3C480,128,600,128,720,133.3C840,139,960,149,1080,149.3C1200,149,1320,139,1380,133.3L1440,128L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z">
+                </path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- === Main Content Sections === -->
+    <main class="container">
+
+        <!-- === Professor Portal Section === -->
+        <section id="professor-section" class="text-center educator-box py-5">
+            <img src="{{ url_for('static', filename='images/instruct.png') }}" alt="Educator">
+            <h2>Educator</h2>
+            <p>Manage and monitor student attendance.</p>
+            <a href="{{ url_for('professor_dashboard') }}" class="btn btn-dark">Log In</a>
+        </section>
+
+        <!-- === Student Portal Section === -->
+        <section id="student-section" class="text-center student-box py-5">
+            <img src="{{ url_for('static', filename='images/pstr.png') }}" alt="Student">
+            <h2>Student</h2>
+            <p>Access attendance records and more.</p>
+            <a href="{{ url_for('student_dashboard') }}" class="btn btn-dark">Log In</a>
+            <a href="{{ url_for('register_student_route') }}" class="btn btn-outline-dark">Create Account</a>
+        </section>
+
+    </main>
+
+    <!-- === Footer === -->
+    <footer class="footer">
+        <p>Nexus-AI © 2025</p>
+    </footer>
+
+    <!-- === Bootstrap JS Bundle === -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

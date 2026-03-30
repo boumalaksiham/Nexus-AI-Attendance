@@ -1,0 +1,66 @@
+<!-- 
+admin_login.html
+
+📄 Description:
+This page allows an administrator to log into the system using their email and password credentials.
+
+🔧 Features:
+- Secure login form for administrators
+- Link to navigate back to homepage
+- Link to register if the user doesn’t have an account
+
+👤 User Role: Admin
+🎯 Route: /admin-login (POST)
+🎨 Stylesheet: styles.css
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- === Required Meta Tags === -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- === Page Title === -->
+    <title>Admin Login</title>
+
+    <!-- === External CSS Styles === -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+    <!-- === Back Navigation === -->
+    <nav>
+        <a href="{{ url_for('home') }}" class="back-arrow">← Back to Home</a>
+    </nav>
+
+    <!-- === Login Form Container === -->
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Admin Login</h2>
+
+            <!-- Login Form -->
+            <form action="{{ url_for('admin_login') }}" method="POST">
+                <!-- Email Input -->
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" required>
+                </div>
+
+                <!-- Password Input -->
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" required>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+
+            <!-- Registration Link -->
+            <p>Don't have an account? <a href="{{ url_for('admin_register') }}">Register here</a></p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!-- 
+view_attendance.html
+
+This page allows students to:
+✅ Select a specific class.
+✅ Optionally filter attendance records by date.
+✅ View a table of their attendance history, showing the date and status (Present/Absent).
+
+Features:
+- Dynamically populates class options from the backend.
+- Displays attendance records if available.
+- Provides a clean and readable table layout.
+- Styled using an external CSS file: view_attendance.css.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Attendance</title>
+
+    <!-- ✅ External CSS for styling the attendance page -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/view_attendance.css') }}">
+</head>
+<body>
+
+    <!-- 📦 Main container for the attendance page -->
+    <div class="container">
+        <h2>📅 View My Attendance</h2>
+
+        <!-- 🧾 Attendance Form -->
+        <form method="POST">
+            <label>Select a Class: </label>
+            <select name="class_name">
+                {% for class in student_classes %}
+                    <option value="{{ class }}">{{ class }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Filter by Date: </label>
+            <input type="date" name="selected_date">
+
+            <button type="submit">View Attendance</button>
+        </form>
+
+        <!-- 📊 Attendance Table if Records Exist -->
+        {% if attendance_records %}
+        <h3>📅 Attendance Records</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in attendance_records %}
+                <tr>
+                    <td>{{ record[0] }}</td>
+                    <td>{{ record[1] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No attendance records found.</p>
+        {% endif %}
+
+        <!-- 🔙 Back to Dashboard -->
+        <a href="{{ url_for('student_dashboard') }}" class="btn-back">🔙 Back to Dashboard</a>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!-- 
+student_login.html
+
+This page allows students to log in using:
+Traditional credentials: Enrollment number and password.
+Optional face recognition for biometric login (using a separate POST request).
+
+Features:
+- Styled using `student_styles.css` for a clean login interface.
+- Includes a fallback link for students to register if they don’t have an account yet.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Standard metadata for responsive layout and character support -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Page Title -->
+    <title>Student Login</title>
+
+    <!-- Link to the external CSS file for student login styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/student_styles.css') }}">
+</head>
+<body>
+
+    <!-- Navigation Link to Return to Homepage -->
+    <nav>
+        <!-- Clicking this will redirect the user to the home page -->
+        <a href="{{ url_for('home') }}" class="back-arrow">← Back to Home</a>
+    </nav>
+
+    <!-- Login Box -->
+    <div class="login-container">
+        <h2>Student Login</h2>
+
+        <!-- Login Form with enrollment and password fields -->
+        <form method="POST" action="{{ url_for('student_login') }}">
+            <!-- Student's Enrollment Number (acts as username) -->
+            <input type="text" name="enrollment" placeholder="Enrollment" required>
+
+            <!-- Password field (input hidden as dots) -->
+            <input type="password" name="password" placeholder="Password" required>
+
+            <!-- Login button triggers traditional login -->
+            <button type="submit">Login</button>
+        </form>
+
+        <!-- Optional Face Recognition Login -->
+        <div class="btn-group">
+            <!-- This form posts to a route that initiates facial recognition login -->
+            <form method="POST" action="{{ url_for('student_login_face') }}">
+                <button type="submit" class="face-btn">Login with Face Recognition</button>
+            </form>
+        </div>
+
+        <!-- Link to student registration page if account doesn't exist -->
+        <p>Don't have an account? <a href="{{ url_for('register_student_route') }}">Register</a></p>
+    </div>
+
+</body>
+</html>

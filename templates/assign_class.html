@@ -1,0 +1,62 @@
+<!-- 
+assign_class.html
+
+Description:
+This page allows the admin to assign two classes to a selected professor.
+
+Features:
+- Dropdown to select a professor from a list
+- Two text fields to input class names
+- Submit button to assign classes
+- Link to return to the admin dashboard
+
+User Role: Admin
+Route: /assign-class (POST)
+Stylesheet: admin.css
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <!-- === Basic Page Metadata === -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Classes</title>
+
+    <!-- === Link to Admin Styling Sheet === -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+
+    <!-- === Page Header === -->
+    <h1>🏫 Assign Classes to Professors</h1>
+
+    <!-- === Assignment Form === -->
+    <form action="{{ url_for('assign_class') }}" method="post">
+
+        <!-- === Dropdown: Select a Professor === -->
+        <label for="professor_id">Select Professor:</label>
+        <select name="professor_id" required>
+            {% for professor in professors %}
+                <option value="{{ professor.id }}">{{ professor.name }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- === Input Fields: Enter Two Class Names === -->
+        <label for="class_name_1">Class Name 1:</label>
+        <input type="text" name="class_name_1" required>
+
+        <label for="class_name_2">Class Name 2:</label>
+        <input type="text" name="class_name_2" required>
+
+        <!-- === Submit Button === -->
+        <button type="submit">✅ Assign Classes</button>
+    </form>
+
+    <!-- === Back Link to Admin Dashboard === -->
+    <br>
+    <a href="{{ url_for('admin_dashboard') }}">⬅️ Back to Dashboard</a>
+
+</body>
+</html>

@@ -1,0 +1,278 @@
+/*
+admin.css
+
+Admin Dashboard Stylesheet for Nexus-AI
+
+Purpose:
+This stylesheet defines the layout and visual styling for the admin dashboard interface of the Nexus-AI attendance system.
+It supports admin-specific functionality such as assigning users to classrooms, managing settings, and viewing structured data.
+
+Sections:
+- Global Styles (layout, font, background)
+- Sidebar Navigation (admin links and logout section)
+- Main Content Area (headers, spacing, layout)
+- Quick Actions (card-based interactions)
+- Card Design (used for admin actions or summaries)
+- Forms Inside Cards (for assigning classes, dropdowns, etc.)
+- Tables (used for structured data like user assignments)
+- Classroom Section (assigning professors/students to classes)
+- Button Variations (default, secondary, small)
+
+Styles:
+This file uses modern design patterns including flexbox layout, consistent font sizing, color themes, shadows, and responsive spacing.
+Linked to HTML templates where admins interact with system configurations.
+*/
+
+/* ===== GLOBAL STYLES ===== */
+/* Applies to the entire body of the page */
+body {
+    font-family: 'Poppins', sans-serif; /* Modern, clean font */
+    margin: 0;
+    padding: 0;
+    display: flex; /* Allows for flexible layout: sidebar + main content */
+    background-color: #f7f7f7; /* Light gray background for a clean look */
+}
+
+
+/* ===== SIDEBAR STYLES ===== */
+.sidebar {
+    width: 250px; /* Fixed sidebar width */
+    height: 100vh; /* Full height of the viewport */
+    background: #1D3557; /* Dark blue for visual contrast */
+    color: white;
+    padding-top: 20px;
+    position: fixed; /* Keeps sidebar in place on scroll */
+}
+
+/* Title inside sidebar */
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* Remove default list style for navigation */
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+/* Sidebar list items */
+.sidebar ul li {
+    padding: 15px 20px;
+}
+
+/* Sidebar navigation links */
+.sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    display: flex; /* Align icon and text horizontally */
+    align-items: center;
+}
+
+/* Icons next to sidebar links */
+.sidebar ul li a i {
+    margin-right: 10px; /* Space between icon and text */
+}
+
+/* Hover effect for sidebar links */
+.sidebar ul li a:hover {
+    background: rgba(255, 255, 255, 0.2); /* Slightly lighter background on hover */
+    border-radius: 5px;
+    display: block;
+}
+
+/* Spacing before logout link */
+.logout {
+    margin-top: 50px;
+}
+
+
+/* ===== MAIN CONTENT AREA ===== */
+.main-content {
+    margin-left: 250px; /* Leaves space for sidebar */
+    padding: 40px;
+    width: calc(100% - 250px); /* Remaining width after sidebar */
+}
+
+/* Main header styling */
+header h1 {
+    font-size: 28px;
+    color: #333;
+}
+
+header p {
+    font-size: 14px;
+    color: #666;
+}
+
+
+/* ===== QUICK ACTIONS ===== */
+/* Contains small interactive blocks like cards or buttons */
+.quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+
+/* ===== CARD STYLES ===== */
+/* Small boxes showing actions, forms, or summaries */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    text-align: center;
+    width: 230px;
+    transition: 0.3s; /* Smooth hover effects */
+}
+
+/* Icons in cards */
+.card i {
+    font-size: 40px;
+    color: #1D3557;
+    margin-bottom: 10px;
+}
+
+/* Card titles */
+.card h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/* Card descriptions */
+.card p {
+    font-size: 14px;
+    color: #666;
+}
+
+
+/* ===== BUTTONS IN CARDS ===== */
+.card .btn,
+.card button {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    background: #1D3557;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+/* Hover effect for buttons */
+.card .btn:hover,
+.card button:hover {
+    background: #163A5F;
+}
+
+/* Alternate style for secondary buttons */
+.card .btn.secondary {
+    background: #4A647E;
+}
+
+
+/* ===== FORMS INSIDE CARDS ===== */
+.card form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Inputs and dropdowns inside cards */
+.card select,
+.card input {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+
+/* ===== TABLE SECTION ===== */
+/* Used to display structured data */
+.table-section {
+    margin-top: 40px;
+}
+
+.table-section h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Table cells */
+table th, table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Table headers */
+table th {
+    background: #1D3557;
+    color: white;
+}
+
+/* Hover effect for table rows */
+table tr:hover {
+    background: #f4f4f4;
+}
+
+
+/* ===== CLASSROOM SECTION ===== */
+/* Special form section for assigning professors and students */
+.classroom-section {
+    background: #f8f8f8;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Small title inside classroom sections */
+.classroom-section h4 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+/* Form layout */
+.classroom-section form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Inputs and selects inside the form */
+.classroom-section select,
+.classroom-section input {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+
+/* ===== BUTTON FIXES ===== */
+/* Smaller version of button style */
+.btn.small {
+    padding: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    width: 100%;
+}

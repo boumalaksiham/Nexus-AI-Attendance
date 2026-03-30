@@ -1,0 +1,172 @@
+/*
+style.css
+
+🎨 Nexus-AI Home Page Styling
+
+Purpose:
+This stylesheet styles the landing page of Nexus-AI, including navigation, animated backgrounds,
+hero sections, user category sections (students and educators), and the footer. It uses elegant gradients
+and synchronized animations to create a dynamic and modern feel.
+
+Sections:
+- Root Theme Variables
+- Global Page Styling and Background Animation
+- Navigation Bar
+- Hero Section with Overlay and Animation
+- Student & Educator Highlight Boxes
+- Buttons (Primary & Outline)
+- Footer Styling
+*/
+
+/* === Root Theme Variables (Used across all components for consistency) === */
+:root {
+    --background: #FDFDFD; /* Clean white background */
+    --primary-dark: #1D3557; /* Core brand color - deep blue */
+    --primary-dark-gradient-1: #2C3E50; /* Gradient support color 1 */
+    --primary-dark-gradient-2: #34495E; /* Gradient support color 2 */
+    --primary-dark-gradient-3: #4A647E; /* Muted accent blue */
+    --primary-light: #F5F5F5; /* Soft light gray */
+    --text-dark: #E0E0E0; /* Light gray text for contrast on dark */
+}
+
+/* === Global Page Styling with Animated Background === */
+body {
+    font-family: 'Poppins', sans-serif; /* Modern, professional font */
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(45deg, var(--primary-dark), var(--primary-dark-gradient-1), var(--primary-dark-gradient-2));
+    background-size: 400% 400%; /* Needed for animation effect */
+    animation: gradientAnimation 12s infinite alternate ease-in-out;
+    color: var(--text-dark); /* Light gray text */
+}
+
+/* Background Gradient Animation Keyframes */
+@keyframes gradientAnimation {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* === Navigation Bar === */
+.navbar {
+    background: var(--primary-dark);
+    padding: 15px;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: white;
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    color: white;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--primary-light);
+}
+
+/* === Hero Section with Overlay and Inverse Gradient === */
+.hero {
+    position: relative;
+    background: linear-gradient(45deg, white, var(--primary-dark-gradient-3), var(--primary-dark-gradient-2), var(--primary-dark));
+    background-size: 400% 400%;
+    animation: heroGradientAnimation 10s infinite alternate ease-in-out;
+    color: var(--text-dark);
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Inverse Gradient Animation for Hero */
+@keyframes heroGradientAnimation {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Transparent Overlay on Hero for contrast */
+.hero-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* Hero Content Sits on Top of Overlay */
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.hero p {
+    font-size: 1.2rem;
+}
+
+/* === Student and Educator Highlight Sections === */
+.student-box, .educator-box {
+    padding: 50px;
+    border-radius: 20px;
+    background: linear-gradient(45deg, white, var(--primary-dark), var(--primary-dark-gradient-1), var(--primary-dark-gradient-2), white);
+    background-size: 400% 400%;
+    animation: inverseGradientAnimation 10s infinite alternate ease-in-out;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+    margin: 20px 0;
+    color: white;
+    text-align: center;
+}
+
+/* Opposite Gradient Animation for Student/Educator Blocks */
+@keyframes inverseGradientAnimation {
+    0%   { background-position: 100% 50%; }
+    50%  { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+
+/* === Buttons - Solid Primary Call to Action === */
+.btn-primary {
+    background-color: var(--primary-dark-gradient-1);
+    border: none;
+    padding: 12px 25px;
+    font-weight: bold;
+    border-radius: 30px;
+    color: white;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+/* === Buttons - Outlined Secondary Action === */
+.btn-outline-dark {
+    border: 2px solid var(--primary-light);
+    padding: 10px 25px;
+    border-radius: 30px;
+    color: var(--primary-light);
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-outline-dark:hover {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+/* === Footer with Animated Background === */
+.footer {
+    background: linear-gradient(45deg, var(--primary-dark), var(--primary-dark-gradient-1), var(--primary-dark-gradient-2));
+    background-size: 400% 400%;
+    animation: gradientAnimation 12s infinite alternate ease-in-out;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}

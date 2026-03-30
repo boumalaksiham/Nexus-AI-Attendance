@@ -1,0 +1,60 @@
+<!-- 
+professor_login.html
+
+This page allows professors to log in using:
+- Email
+- Full name
+- Password
+- A special professor code (for extra authentication)
+
+✅ Features:
+- Form is submitted via POST to the backend
+- Navigation link to return to the homepage
+- Styled using `professor_styles.css`
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- === Basic Page Setup === -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professor Login</title>
+
+    <!-- === Custom CSS for Styling === -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/professor_styles.css') }}">
+</head>
+<body>
+    
+    <!-- === Top Navigation: Back to Home === -->
+    <nav>
+        <!-- Button to navigate back to home page -->
+        <a href="{{ url_for('home') }}" class="back-arrow">← Back to Home</a>
+    </nav>
+
+    <!-- === Main Login Container === -->
+    <div class="login-container">
+        <h2>Professor Login</h2>
+
+        <!-- === Login Form === -->
+        <form method="POST">
+            <!-- Email Address (used as unique identifier) -->
+            <input type="text" name="email" placeholder="Email" required>
+
+            <!-- Full Name (used for identification) -->
+            <input type="text" name="name" placeholder="Full Name" required>
+
+            <!-- Password Field -->
+            <input type="password" name="password" placeholder="Password" required>
+
+            <!-- Unique Code to validate the professor (issued by admin) -->
+            <input type="text" name="professor_code" placeholder="Professor Code" required>
+
+            <!-- Submit Button -->
+            <button type="submit">Login</button>
+        </form>
+
+    </div>
+
+</body>
+</html>

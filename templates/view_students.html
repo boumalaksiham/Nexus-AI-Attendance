@@ -1,0 +1,57 @@
+<!-- 
+view_students.html
+
+This admin-facing page displays a list of all registered students in a table format.
+
+Functionality:
+- Shows each student's:
+  - Enrollment number (used as a unique ID)
+  - Full name
+  - Email address
+- Provides a link back to the Admin Dashboard for navigation.
+
+Data Source:
+- The `students` list is passed from the backend, with each student represented as a tuple:
+  [enrollment, name, email]
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Basic HTML Setup -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Students</title>
+
+    <!-- Main Styling (Admin Dashboard Theme) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Page Title -->
+    <h1>📋 List of Students</h1>
+
+    <!-- Student Table -->
+    <table border="1">
+        <tr>
+            <th>Enrollment</th> <!-- Unique student ID -->
+            <th>Name</th>       <!-- Full name -->
+            <th>Email</th>      <!-- Student's email address -->
+        </tr>
+
+        <!-- Populate rows dynamically from student list -->
+        {% for student in students %}
+        <tr>
+            <td>{{ student[0] }}</td> <!-- Enrollment Number -->
+            <td>{{ student[1] }}</td> <!-- Student Name -->
+            <td>{{ student[2] }}</td> <!-- Student Email -->
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- Back to Admin Dashboard -->
+    <br>
+    <a href="{{ url_for('admin_dashboard') }}">⬅️ Back to Dashboard</a>
+
+</body>
+</html>

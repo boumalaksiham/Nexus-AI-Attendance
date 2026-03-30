@@ -1,0 +1,167 @@
+/*
+student_styles.css
+
+🎓 Nexus-AI Student Login/Register Page Stylesheet
+
+Purpose:
+This stylesheet controls the styling of the student-facing login and registration pages for the Nexus-AI platform.
+It includes layout structure, animations, form inputs, buttons, navigation, and adaptive theming.
+
+Sections:
+- Google Font Import
+- Root Color Variables
+- Page Background and Layout
+- Navbar and Back Button
+- Login & Register Containers
+- Input Field Styling
+- Button Styling (including facial recognition)
+- Link Styling (e.g., Forgot Password)
+*/
+
+/* === Import Google Font === */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* === Root Theme Variables (Reusable Color Palette) === */
+:root {
+    --background: #FDFDFD; /* Clean, neutral white background */
+    --primary-dark: #1D3557; /* Deep blue for branding */
+    --primary-dark-gradient-1: #2C3E50; /* Mid dark blue for gradients */
+    --primary-dark-gradient-2: #34495E; /* Rich dark blue */
+    --primary-dark-gradient-3: #4A647E; /* Muted blue */
+    --primary-light: #F5F5F5; /* Soft light gray */
+    --text-dark: #E0E0E0; /* Light gray used for light-on-dark text */
+}
+
+/* === General Page Styling === */
+body {
+    font-family: 'Poppins', sans-serif; /* Clean, modern typography */
+    background: linear-gradient(45deg, var(--primary-dark), var(--primary-dark-gradient-1), var(--primary-dark-gradient-2));
+    background-size: 400% 400%; /* Enables smooth animated transitions */
+    animation: gradientAnimation 12s infinite alternate ease-in-out; /* Background shifting animation */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    color: var(--text-dark); /* Light text for contrast */
+}
+
+/* === Gradient Background Animation === */
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* === Navbar (Top Navigation) === */
+nav {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+/* Back Arrow Link */
+.back-arrow {
+    position: absolute;
+    width: 150px;
+    top: 20px;
+    left: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.2); /* Transparent white background */
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.back-arrow:hover {
+    color: var(--primary-light);
+}
+
+/* === Login & Registration Containers === */
+.login-container, .register-container {
+    background: var(--primary-light); /* Light background for contrast */
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2); /* Soft elevation */
+    width: 360px;
+    text-align: center;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Fade-in animation when component loads */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Container Headings */
+.login-container h2, .register-container h2 {
+    margin-bottom: 20px;
+    color: var(--primary-dark); /* Strong title emphasis */
+}
+
+/* === Input Field Styling === */
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 12px 0;
+    border: 1px solid var(--primary-dark-gradient-3); /* Subtle border */
+    border-radius: 6px;
+    background: var(--background);
+    color: var(--primary-dark);
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+    margin-left: -15px; /* Adjusts alignment inside form */
+}
+
+/* Input Focus Effect */
+input:focus {
+    border-color: var(--primary-dark);
+    outline: none;
+    box-shadow: 0 0 8px rgba(29, 53, 87, 0.3); /* Blue glow effect */
+}
+
+/* === Button Styling (General) === */
+button {
+    width: 75%;
+    padding: 12px;
+    background: linear-gradient(to right, var(--primary-dark-gradient-1), var(--primary-dark-gradient-2));
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Button Hover Effect */
+button:hover {
+    background: var(--primary-dark);
+    transform: scale(1.03); /* Slight zoom effect */
+}
+
+/* === Face Recognition Button === */
+.face-btn {
+    background: linear-gradient(to right, var(--primary-dark-gradient-2), var(--primary-dark-gradient-3));
+    margin-top: 10px;
+}
+
+.face-btn:hover {
+    background: var(--primary-dark-gradient-1);
+}
+
+/* === "Forgot Password" Link Styling === */
+p a {
+    color: var(--primary-dark-gradient-3);
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+p a:hover {
+    color: var(--primary-dark);
+}

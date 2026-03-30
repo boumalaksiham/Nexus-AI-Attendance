@@ -1,0 +1,150 @@
+<!-- 
+view_classrooms.html
+
+This page is used by professors to monitor **live classroom attendance** using facial recognition.
+It connects to a real-time backend (via WebSockets) to stream student data and video frames.
+
+Key Features:
+- Start and stop attendance recording sessions.
+- Select a date to retrieve past attendance records.
+- Displays a live video feed (JPEG frames over WebSocket).
+- Shows a real-time table of recognized students, including their:
+    - Enrollment number
+    - Name
+    - Attendance status (Present/Absent)
+    - Time of recognition
+    - Class name
+    - Number of absences
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Attendance</title>
+
+    <!-- External CSS for styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/view_classrooms.css') }}">
+
+    <!-- Socket.IO for real-time updates -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
+
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Page Heading -->
+    <h1>📸 Live Attendance System</h1>
+
+    <!-- Controls for attendance -->
+    <button id="startAttendanceBtn">Start Attendance</button>
+    <button id="stopAttendanceBtn">Stop Attendance</button>
+    <input type="date" id="calendar" class="date-picker">
+    <button id="retrieveAttendanceBtn">Retrieve Attendance</button>
+
+    <!-- Live Video Feed -->
+    <br><br>
+    <img id="videoFeed" alt="Live Feed">
+
+    <!-- Attendance Table -->
+    <div class="attendance-container">
+        <h2>✅ Recognized Students</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Enrollment</th>
+                    <th>Student Name</th>
+                    <th>Status</th>
+                    <th>Time Recognized</th>
+                    <th>Class</th>
+                    <th>Absences</th>
+                </tr>
+            </thead>
+            <tbody id="attendanceTable"></tbody>
+        </table>
+    </div>
+
+    <!-- Real-Time Event Handlers -->
+    <script>
+        const socket = io("http://127.0.0.1:5000", {
+            transports: ["websocket"],
+        });
+
+        socket.on("connect", function () {
+            console.log("✅ WebSocket connected!");
+        });
+
+        // Start attendance
+        document.getElementById("startAttendanceBtn").addEventListener("click", function() {
+            fetch("/start-attendance/{{ class_id }}")
+                .then(response => {
+                    alert(response.ok ? "🎉 Attendance started." : "❌ Error starting attendance.");
+                });
+        });
+
+        // Stop attendance
+        document.getElementById("stopAttendanceBtn").addEventListener("click", function() {
+            fetch("/stop-attendance", { method: "POST" })
+                .then(response => response.json())
+                .then(data => alert(data.message ? "✅ Attendance stopped." : "❌ Error stopping attendance"))
+                .catch(error => console.error("Error:", error));
+        });
+
+        // Handle incoming video frames
+        socket.on("video_frame", function (data) {
+            document.getElementById("videoFeed").src = "data:image/jpeg;base64," + data.image;
+            updateAttendanceTable(data.students);
+        });
+
+        // Retrieve attendance for a specific date
+        document.getElementById("retrieveAttendanceBtn").addEventListener("click", function () {
+            let selectedDate = document.getElementById("calendar").value;
+            if (!selectedDate) return alert("❌ Please select a date!");
+
+            fetch(`/retrieve-attendance/{{ class_id }}?date=${selectedDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (Array.isArray(data.recognized_students)) {
+                        updateAttendanceTable(data.recognized_students);
+                    } else {
+                        console.error("Invalid data format:", data);
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        });
+
+        // Update the attendance table
+        function updateAttendanceTable(students) {
+            const tableBody = document.getElementById("attendanceTable");
+            tableBody.innerHTML = "";
+
+            if (!Array.isArray(students)) return;
+
+            students.forEach(student => {
+                const row = document.createElement("tr");
+                const statusClass = student.status === "Present" ? "present" : "absent";
+                const statusIcon = student.status === "Present"
+                    ? `<i class="fas fa-check-circle status-icon"></i> Present`
+                    : `<i class="fas fa-times-circle status-icon"></i> Absent`;
+
+                row.innerHTML = `
+                    <td>${student.enrollment}</td>
+                    <td>${student.name || "Unknown"}</td>
+                    <td class="${statusClass}">${statusIcon}</td>
+                    <td>${student.time_recognized || "N/A"}</td>
+                    <td>${student.class_name}</td>
+                    <td>${student.absences}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        socket.on("disconnect", function () {
+            console.log("❌ WebSocket disconnected!");
+        });
+    </script>
+
+</body>
+</html>

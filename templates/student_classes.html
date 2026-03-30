@@ -1,0 +1,55 @@
+<!-- 
+student_classes.html
+
+This page displays all the classes a student is currently enrolled in.
+It includes:
+A sidebar navigation menu with links to the main dashboard, attendance page, and logout.
+A responsive grid layout showing class cards if the student is enrolled.
+A fallback message if the student is not enrolled in any classes.
+A button to return to the main dashboard.
+
+The layout is styled using the external CSS file `dashboard.css`.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Link to CSS file for student dashboard styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <title>My Classes</title>
+</head>
+<body>
+
+    <!-- === Sidebar Navigation === -->
+    <!-- Provides links to main dashboard, attendance view, and logout -->
+    <div class="sidebar">
+        <h2>📚 My Classes</h2>
+        <a href="{{ url_for('student_dashboard') }}">🏠 Dashboard</a>
+        <a href="{{ url_for('view_attendance') }}">📅 View Attendance</a>
+        <a href="{{ url_for('student_logout') }}">🚪 Logout</a>
+    </div>
+
+    <!-- === Main Content Area === -->
+    <div class="container">
+        <h2>📚 Enrolled Classes</h2>
+
+        <!-- ✅ If the student is enrolled in any classes, display them -->
+        {% if student_classes %}
+            <div class="class-grid">
+                {% for class_name in student_classes %}
+                    <!-- Display each class as a card -->
+                    <div class="class-card">📖 {{ class_name }}</div>
+                {% endfor %}
+            </div>
+
+        <!-- ❌ If not enrolled in any classes, show a warning message -->
+        {% else %}
+            <p>⚠️ You are not enrolled in any classes.</p>
+        {% endif %}
+
+        <!-- 🔙 Navigation link back to dashboard -->
+        <a href="{{ url_for('student_dashboard') }}" class="back-btn">⬅️ Back to Dashboard</a>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,174 @@
+/*
+styles.css
+
+Nexus-AI Login Page Styling
+
+Purpose:
+This stylesheet handles the layout and styling of the login screen for Nexus-AI,
+featuring a modern card layout, animated background, responsive form inputs, 
+and a clean user interface experience for both new and returning users.
+
+Sections:
+- Theme Variables
+- Animated Gradient Background
+- Navigation: Back Button
+- Login Container & Card
+- Input Groups
+- Buttons
+- Footer Links
+*/
+
+/* === Root Theme Variables (Used across all components for consistency) === */
+:root {
+    --background: #FDFDFD;                  /* Neutral white background */
+    --primary-dark: #1D3557;                /* Nexus-AI brand blue */
+    --primary-dark-gradient-1: #2C3E50;     /* Support blue for gradients */
+    --primary-dark-gradient-2: #34495E;     /* Deep blue for accent effects */
+    --primary-dark-gradient-3: #4A647E;     /* Muted blue for variation */
+    --primary-light: #F5F5F5;               /* Light neutral gray */
+    --text-dark: #1D3557;                   /* Readable dark text color */
+}
+
+/* === Full Page Animated Gradient Background === */
+body {
+    font-family: 'Poppins', sans-serif; /* Sleek and readable font */
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Ensure full screen height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: linear-gradient(45deg, var(--primary-dark), var(--primary-dark-gradient-1), var(--primary-dark-gradient-2));
+    background-size: 400% 400%;
+    animation: gradientAnimation 12s infinite alternate ease-in-out;
+}
+
+/* Smooth Shifting Gradient Background */
+@keyframes gradientAnimation {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* === Back Button (Top Left Corner) === */
+.back-arrow {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+/* Hover Effect for Back Arrow */
+.back-arrow:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* === Login Section Container (Centers the Box) === */
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+}
+
+/* === Login Card === */
+.login-box {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    width: 380px;
+    text-align: center;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Subtle elevation */
+}
+
+/* Login Header */
+.login-box h2 {
+    margin-bottom: 20px;
+    font-size: 26px;
+    color: var(--primary-dark);
+}
+
+/* === Input Field Grouping === */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+    width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Labels for Inputs */
+.input-group label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--primary-dark);
+}
+
+/* ✍️ Input Field Styling */
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 2px solid var(--primary-dark);
+    background: #f9f9f9;
+    color: var(--primary-dark);
+    outline: none;
+    transition: 0.3s;
+}
+
+/* Input Focused Styling */
+.input-group input:focus {
+    background: white;
+    box-shadow: 0 0 8px rgba(29, 53, 87, 0.4); /* Blue glow */
+    border: 2px solid var(--primary-dark-gradient-1);
+}
+
+/* === Primary Login Button === */
+.btn-primary {
+    width: 70%;
+    padding: 14px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    background: var(--primary-dark);
+    color: white;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+/* Button Hover Effect */
+.btn-primary:hover {
+    background: var(--primary-dark-gradient-2);
+}
+
+/* === Register Text & Link === */
+.login-box p {
+    margin-top: 15px;
+    font-size: 14px;
+    color: var(--primary-dark);
+}
+
+/* Register Link */
+.login-box a {
+    color: var(--primary-dark);
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.login-box a:hover {
+    text-decoration: underline;
+}

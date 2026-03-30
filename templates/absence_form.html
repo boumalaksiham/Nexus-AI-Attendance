@@ -1,0 +1,37 @@
+<!-- 
+Absence Request Form
+
+This form allows students to send a request explaining their absence.
+They must select a reason from the dropdown and can optionally include additional details.
+
+Action: Submits to /send_absence (POST method)
+-->
+
+<form id="absence-form" action="/send_absence" method="POST">
+
+    <!-- 
+    Dropdown: Required field where the student selects one of the predefined reasons for being absent 
+    Options include common categories like Sick, Family Emergency, Travel, or Other
+    -->
+    <label for="reason">Select Absence Reason:</label>
+    <select id="reason" name="reason" required>
+        <option value="Sick">Sick</option>
+        <option value="Family Emergency">Family Emergency</option>
+        <option value="Travel">Travel</option>
+        <option value="Other">Other</option>
+    </select>
+
+    <!-- 
+    Optional Textarea: 
+    Students can type any additional context or explanation they feel is important
+    This is not required but helps professors better understand the situation
+    -->
+    <textarea name="message" placeholder="Additional details (optional)"></textarea>
+
+    <!-- 
+    Button to submit the absence request to the backend 
+    The server-side route will handle storing or notifying professors
+    -->
+    <button type="submit">Send Absence Request</button>
+
+</form>

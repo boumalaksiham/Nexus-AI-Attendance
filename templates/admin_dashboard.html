@@ -1,0 +1,185 @@
+<!-- 
+admin_dashboard.html
+
+Description:
+This is the main dashboard for the administrator of the Nexus-AI system.
+It allows the admin to:
+- Manage professors, students, and classrooms
+- Assign professors and students to classrooms
+- Change student passwords
+- View recent system activity
+
+Route: /admin-dashboard
+Role: Admin
+Styles: admin.css (external)
+Icons: FontAwesome
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    
+    <!-- Link to external CSS stylesheet for admin layout -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    
+    <!-- FontAwesome for admin icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts (Poppins for styling) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- === Sidebar Navigation === -->
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul>
+            <li><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="{{ url_for('view_professors') }}"><i class="fas fa-user-tie"></i> Professors</a></li>
+            <li><a href="{{ url_for('view_students') }}"><i class="fas fa-user-graduate"></i> Students</a></li>
+            <li><a href="#"><i class="fas fa-school"></i> Classrooms</a></li>
+            <li><a href="{{ url_for('settings') }}"><i class="fas fa-cogs"></i> Settings</a></li>
+            <li><a href="{{ url_for('admin_logout') }}" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- === Main Dashboard Content === -->
+    <div class="main-content">
+        
+        <!-- Welcome Header -->
+        <header>
+            <h1>Welcome, Admin</h1>
+            <p>Manage system functionalities efficiently.</p>
+        </header>
+
+        <!-- === Quick Actions Section === -->
+        <div class="quick-actions">
+
+            <!-- Card: Manage Professors -->
+            <div class="card">
+                <i class="fas fa-user-tie"></i>
+                <h3>Professors</h3>
+                <p>Manage & assign professors.</p>
+                <a href="{{ url_for('view_professors') }}" class="btn">View</a>
+                <a href="{{ url_for('register_professor_route') }}" class="btn secondary">Add</a>
+            </div>
+            
+            <!-- Card: Manage Students -->
+            <div class="card">
+                <i class="fas fa-user-graduate"></i>
+                <h3>Students</h3>
+                <p>Manage student details.</p>
+                <a href="{{ url_for('view_students') }}" class="btn">View</a>
+            </div>
+
+            <!-- Card: Create Classroom -->
+            <div class="card">
+                <i class="fas fa-school"></i>
+                <h3>Classrooms</h3>
+                <p>Manage & Assign Classrooms.</p>
+                <form action="{{ url_for('create_classroom') }}" method="post">
+                    <input type="text" name="class_name" placeholder="Enter class name" required>
+                    <button type="submit" class="btn small">Create</button>
+                </form>
+            </div>
+
+            <!-- Card: Assign Professor to Class -->
+            <div class="card">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <h3>Assign Professor</h3>
+                <form action="{{ url_for('assign_professor_to_class') }}" method="post">
+                    <select name="professor_id" required>
+                        <option value="" disabled selected>Select Professor</option>
+                        {% for professor in professors %}
+                            <option value="{{ professor.id }}">{{ professor.name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="classroom_id" required>
+                        <option value="" disabled selected>Select Classroom</option>
+                        {% for classroom in classrooms %}
+                            <option value="{{ classroom.id }}">{{ classroom.class_name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit" class="btn small">Assign</button>
+                </form>
+            </div>
+
+            <!-- Card: Assign Student to Class -->
+            <div class="card">
+                <i class="fas fa-user-plus"></i>
+                <h3>Assign Students</h3>
+                <form action="{{ url_for('assign_student_to_classroom') }}" method="post">
+                    <select name="student_id" required>
+                        <option value="" disabled selected>Select Student</option>
+                        {% for student in students %}
+                            <option value="{{ student.id }}">{{ student.name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="classroom_id" required>
+                        <option value="" disabled selected>Select Classroom</option>
+                        {% for class in classrooms %}
+                            <option value="{{ class.id }}">{{ class.class_name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit" class="btn small">Assign</button>
+                </form>
+            </div>
+
+            <!-- Card: Change Student Password -->
+            <div class="card">
+                <i class="fas fa-key"></i>
+                <h3>Change Password</h3>
+                <form action="{{ url_for('change_student_password') }}" method="post">
+                    <select name="student_id" required>
+                        <option value="" disabled selected>Select Student</option>
+                        {% for student in students %}
+                            <option value="{{ student.id }}">{{ student.name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <input type="password" name="new_password" placeholder="Enter new password" required>
+
+                    <button type="submit" class="btn small">Update</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- === Recent Activity Table === -->
+        <section class="table-section">
+            <h2>Recent Activity</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Role</th>
+                        <th>Action</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for activity in activities %}
+                    <tr>
+                        <td>Admin</td>
+                        <td>Admin</td>
+                        <td>{{ activity['action'] }}</td>
+                        <td>{{ activity['timestamp'] }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4">No recent activity</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+</body>
+</html>

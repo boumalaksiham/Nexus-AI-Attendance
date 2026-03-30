@@ -1,0 +1,132 @@
+/*
+view_attendance.css
+
+Attendance Viewing Page – Nexus-AI
+
+Purpose:
+This stylesheet styles the attendance viewing interface, including headers, tables,
+form elements, and navigation buttons. It uses a cohesive visual theme in line 
+with Nexus-AI’s branding.
+
+Sections:
+- Theme Variables
+- Base Styles
+- Container Box Styling
+- Headers & Titles
+- Form Elements
+- Action Buttons
+- Attendance Table
+- Back Navigation Button
+*/
+
+/* === Theme Variables (Shared Across the System) === */
+:root {
+    --background: #FDFDFD;                  /* Off-white neutral */
+    --primary-dark: #1D3557;                /* Deep brand blue */
+    --primary-dark-gradient-1: #2C3E50;     /* Gradient shade 1 */
+    --primary-dark-gradient-2: #34495E;     /* Gradient shade 2 */
+    --primary-dark-gradient-3: #4A647E;     /* Gradient shade 3 */
+    --primary-light: #F5F5F5;               /* Soft gray */
+    --text-dark: #E0E0E0;                   /* Light gray for text on dark bg */
+}
+
+/* === Base Styling for the Page === */
+body {
+    font-family: 'Poppins', sans-serif; /* Modern, readable font */
+    background: linear-gradient(45deg, var(--primary-dark), var(--primary-dark-gradient-1), var(--primary-dark-gradient-2));
+    color: var(--text-dark);
+    text-align: center;
+    padding: 30px;
+}
+
+/* === Container for Attendance Section === */
+.container {
+    max-width: 800px;                         /* Limit width for readability */
+    margin: auto;
+    background: var(--primary-dark-gradient-3); /* Muted blue background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Subtle elevation */
+}
+
+/* === Section Headings === */
+h2 {
+    color: var(--primary-light); /* Soft white for clarity */
+}
+
+h3 {
+    color: white;
+    margin-top: 30px;
+}
+
+/* === Form Inputs: Date & Class Select === */
+label {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+select,
+input[type="date"] {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    font-size: 1rem;
+    margin: 10px; /* Spacing between fields */
+}
+
+/* === Primary Action Buttons (e.g. View Attendance) === */
+button {
+    background-color: var(--primary-dark-gradient-1);
+    border: none;
+    padding: 12px 25px;
+    font-weight: bold;
+    border-radius: 30px;
+    color: white;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+/* === Attendance Table Styling === */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: var(--primary-light); /* Light background for contrast */
+    color: black;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th,
+td {
+    padding: 12px;
+    border: 1px solid #ddd; /* Light border between cells */
+}
+
+th {
+    background-color: var(--primary-dark); /* Consistent header style */
+    color: white;
+}
+
+/* === Back Button Styling === */
+.btn-back {
+    margin-top: 20px;
+    display: inline-block;
+    text-decoration: none;
+    padding: 12px 25px;
+    font-weight: bold;
+    border-radius: 30px;
+    background-color: var(--primary-dark-gradient-2);
+    color: white;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-back:hover {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+}

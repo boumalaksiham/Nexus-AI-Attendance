@@ -1,0 +1,139 @@
+<!-- 
+about.html
+
+About Page for Nexus-AI
+
+Purpose:
+This page introduces the AI-powered attendance system, explaining the platform’s purpose, features, mission, and vision. 
+It serves as an informative overview for prospective users—students, professors, and administrators.
+
+Sections:
+- Navigation Bar (links to other parts of the system)
+- Hero Banner (main heading and call to action)
+- "Who We Are" (brief about the team/system)
+- "What We Offer" (functional highlights in a grid layout)
+- Mission & Vision (strategic goals and philosophy)
+- Footer (basic copyright)
+
+Styles:
+Linked to an external stylesheet: `about.css`
+Includes icons from FontAwesome and interactivity via `about.js`
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us</title>
+
+    <!-- Link to external CSS stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+
+    <!-- FontAwesome for icon display -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- JavaScript file for page interactivity -->
+    <script defer src="{{ url_for('static', filename='js/about.js') }}"></script>
+</head>
+<body>
+
+    <!-- ===== Navigation Bar ===== -->
+    <nav class="navbar">
+        <div class="container">
+            <!-- Logo linking to homepage -->
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='images/Nexus.png') }}" alt="Nexus-AI Logo" height="50" style="max-width: 150px; object-fit: contain;">
+            </a>
+
+            <!-- Navigation links -->
+            <ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('about') }}" class="active">About</a></li>
+                <li><a href="{{ url_for('professor_dashboard') }}">Professor</a></li>
+                <li><a href="{{ url_for('student_dashboard') }}">Student</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ===== Hero Banner ===== -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1>About Us</h1>
+            <p>Empowering Institutions with AI-driven Attendance & Learning Solutions</p>
+        </div>
+    </header>
+
+    <!-- ===== Who We Are Section ===== -->
+    <section class="who-we-are">
+        <div class="image-box">
+            <img src="{{ url_for('static', filename='images/aboutus.png') }}" alt="Our Team">
+        </div>
+        <div class="text-box">
+            <h2>Who Are We?</h2>
+            <p>We are a next-generation AI-powered attendance management platform that simplifies daily administrative tasks, automates attendance tracking, and enhances student and faculty interactions.</p>
+            <p>Our platform is built for educators, institutions, and students, integrating facial recognition, real-time reporting, and analytics to drive efficiency and productivity.</p>
+        </div>
+    </section>
+
+    <!-- ===== What We Offer Section (Functionalities) ===== -->
+    <section class="functionalities">
+        <h2>What We Offer</h2>
+        <div class="grid-container">
+            <!-- Each grid-item describes one key feature -->
+            <div class="grid-item">
+                <i class="fas fa-user-check"></i>
+                <h3>AI-Based Attendance</h3>
+                <p>Automated face recognition ensures quick and accurate attendance tracking.</p>
+            </div>
+            <div class="grid-item">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <h3>Course Management</h3>
+                <p>Professors can update and manage courses seamlessly.</p>
+            </div>
+            <div class="grid-item">
+                <i class="fas fa-user-graduate"></i>
+                <h3>Student Database</h3>
+                <p>Every student has a unique ID, ensuring smooth record-keeping.</p>
+            </div>
+            <div class="grid-item">
+                <i class="fas fa-users"></i>
+                <h3>Role-Based Access</h3>
+                <p>Admins, professors, and students have different levels of access and functionalities.</p>
+            </div>
+            <div class="grid-item">
+                <i class="fas fa-file-alt"></i>
+                <h3>Automated Reports</h3>
+                <p>Generate detailed reports for individuals or entire classes.</p>
+            </div>
+            <div class="grid-item">
+                <i class="fas fa-cogs"></i>
+                <h3>Customizable Settings</h3>
+                <p>Admins can modify website settings, user permissions, and classroom structures.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Mission & Vision Section ===== -->
+    <section class="mission-vision">
+        <div class="container">
+            <div class="card">
+                <i class="fas fa-bullseye"></i>
+                <h3>Our Mission</h3>
+                <p>To revolutionize the education sector through AI-powered automation, increasing efficiency and accessibility worldwide.</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-eye"></i>
+                <h3>Our Vision</h3>
+                <p>We envision a future where AI optimizes classroom management, enhances learning experiences, and reduces administrative burdens.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Footer ===== -->
+    <footer>
+        <p>© 2025 AI Attendance System. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>

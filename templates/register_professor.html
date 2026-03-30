@@ -1,0 +1,65 @@
+<!-- 
+register_professor.html
+
+This page allows administrators to register a new professor into the system.
+
+✅ Features:
+- Collects:
+  • Professor Name
+  • Email
+  • Password
+- Form submission is handled by the Flask route `register_professor_route`
+- Includes a navigation link to return to the Admin Dashboard
+
+🎨 Styling:
+- Uses the shared `style.css` file from the `/static/css/` directory
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- === Page Configuration === -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Professor</title>
+
+    <!-- === Link to Shared CSS Stylesheet === -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- === Container for Centering Content === -->
+    <div class="container">
+        <h2>Register New Professor</h2>
+
+        <!-- 
+            === Registration Form ===
+            This form collects professor details:
+            - Name
+            - Email
+            - Password
+            The form submits data to the Flask route 'register_professor_route'
+        -->
+        <form action="{{ url_for('register_professor_route') }}" method="POST">
+            <!-- Professor's Full Name -->
+            <label for="name">Professor Name:</label>
+            <input type="text" name="name" required>
+
+            <!-- Email Address -->
+            <label for="email">Email:</label>
+            <input type="email" name="email" required>
+
+            <!-- Password -->
+            <label for="password">Password:</label>
+            <input type="password" name="password" required>
+
+            <!-- Submit Button -->
+            <button type="submit">Register Professor</button>
+        </form>
+
+        <!-- Back Navigation to Admin Dashboard -->
+        <p><a href="{{ url_for('admin_dashboard') }}">⬅️ Back to Dashboard</a></p>
+    </div>
+
+</body>
+</html>

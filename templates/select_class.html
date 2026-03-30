@@ -1,0 +1,55 @@
+<!-- 
+select_class.html
+
+This page allows a student to select a class from their enrolled list in order to view attendance records.
+
+Features:
+📚 Displays a dropdown menu of classes the student is enrolled in.
+📨 On form submission, the selected class is sent via POST to the `view_attendance` route.
+🔙 Includes a link to return to the main student dashboard.
+
+Styling:
+- Inherits shared styles from `style.css`.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Select a Class</title>
+
+    <!-- Link to the shared custom CSS stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- === Page Heading === -->
+    <h1>📅 View My Attendance</h1>
+
+    <!-- 
+        === Attendance Viewing Form ===
+        The student selects a class from the dropdown menu.
+        On submission, the selected class name is sent via POST 
+        to the 'view_attendance' route, where the attendance data will be displayed.
+    -->
+    <form method="post" action="{{ url_for('view_attendance') }}">
+        <label for="class_name">Select a Class:</label>
+
+        <!-- 
+            The dropdown menu lists all classes the student is enrolled in.
+            Each option is pulled from the 'student_classes' list passed in from the backend.
+        -->
+        <select name="class_name" required>
+            {% for class in student_classes %}
+                <option value="{{ class }}">{{ class }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Button to submit the form and trigger attendance retrieval -->
+        <button type="submit">View Attendance</button>
+    </form>
+
+    <!-- Link to go back to the student dashboard -->
+    <a href="{{ url_for('student_dashboard') }}">⬅️ Back to Dashboard</a>
+
+</body>
+</html>

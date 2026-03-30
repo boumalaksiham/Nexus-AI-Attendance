@@ -1,0 +1,20 @@
+{# 
+    attendance_table.html
+    
+    This template extends the base layout and displays a dynamic attendance table 
+    for a specific class or subject. The attendance data is rendered as an HTML table 
+    and inserted via the 'tables' variable passed from Flask.
+    #}
+    
+    {% extends "base.html" %}
+    
+    {% block content %}
+        <!-- === Page Title with Subject Context === -->
+        <h1>Attendance Records for {{ subject }}</h1>
+    
+        <!-- === Responsive Table Container === -->
+        <div class="table-responsive mt-4">
+            {{ tables|safe }}  {# The attendance table is passed in from Flask and rendered here #}
+        </div>
+    {% endblock %}
+    

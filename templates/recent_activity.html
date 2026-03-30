@@ -1,0 +1,41 @@
+<!-- 
+recent_activity.html
+
+This page displays a chronological list of recent administrative activities.
+
+✅ Features:
+- Loops through the 'activities' list passed from the Flask backend
+- Each activity includes:
+  • A description of the action
+  • A timestamp indicating when it happened
+
+🎨 Styling:
+- Uses `admin.css` for layout and design
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- === Metadata & Page Setup === -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recent Activity</title>
+
+    <!-- === Link to Admin-Specific Stylesheet === -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+
+    <!-- === Header Title === -->
+    <h1>🔍 Recent Activity</h1>
+
+    <!-- === Activity Feed List === -->
+    <ul>
+        {% for activity in activities %}
+            <!-- Each item shows what action occurred and when -->
+            <li>📌 {{ activity.action }} - {{ activity.timestamp }}</li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>

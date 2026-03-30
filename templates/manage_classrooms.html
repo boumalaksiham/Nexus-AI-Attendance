@@ -1,0 +1,57 @@
+<!-- 
+manage_classrooms.html
+
+This page allows the admin to view all the classrooms in the system.
+
+🧩 Key Features:
+- Displays a table of classrooms including:
+    - Class ID
+    - Class Name
+    - Assigned Professor
+- Pulled from a list called `classrooms` passed from the backend
+- Navigation link to return to the admin dashboard
+
+Used by: Admin
+CSS: style.css
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- === Basic Metadata === -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Classrooms</title>
+
+    <!-- === Global Styling === -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- === Page Title === -->
+    <h1>🏫 Classroom Management</h1>
+
+    <!-- === Classroom Table === -->
+    <table border="1">
+        <tr>
+            <th>Class ID</th>
+            <th>Class Name</th>
+            <th>Professor</th>
+        </tr>
+
+        <!-- === Loop Over Classrooms and Display Each Row === -->
+        {% for classroom in classrooms %}
+        <tr>
+            <td>{{ classroom[0] }}</td>  <!-- Class ID -->
+            <td>{{ classroom[1] }}</td>  <!-- Class Name -->
+            <td>{{ classroom[2] }}</td>  <!-- Professor Name -->
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- === Navigation Link Back to Admin Dashboard === -->
+    <br>
+    <a href="{{ url_for('admin_dashboard') }}">⬅️ Back to Dashboard</a>
+
+</body>
+</html>

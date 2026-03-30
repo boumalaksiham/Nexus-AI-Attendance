@@ -1,0 +1,77 @@
+<!-- 
+view_professors.html
+
+This admin-facing page displays all registered professors in a tabular format.
+Admins can:
+- View professor ID, name, email, and the classes assigned to each professor
+- Remove a professor from the system using a "Remove" button (with a confirmation dialog)
+
+The table is dynamically populated using server-rendered values passed in via the `professors` list.
+
+UI Includes:
+- Table with professor data
+- Conditional fallback message if no professors are available
+- Navigation link to return to the Admin Dashboard
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Basic Page Setup -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Professors</title>
+
+    <!-- Main CSS file (can be customized as needed for admin views) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Page Title -->
+    <h1>📋 List of Professors</h1>
+
+    <!-- Professors Table -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th> <!-- Professor unique ID -->
+                <th>Name</th> <!-- Full name of professor -->
+                <th>Email</th> <!-- Email for login/communication -->
+                <th>Assigned Classes</th> <!-- Names of classes the professor is teaching -->
+                <th>Actions</th> <!-- Buttons for removing professor -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for professor in professors %}
+            <tr>
+                <!-- Populate each professor row dynamically -->
+                <td>{{ professor[0] }}</td>  <!-- Professor ID -->
+                <td>{{ professor[1] }}</td>  <!-- Professor Name -->
+                <td>{{ professor[2] }}</td>  <!-- Email -->
+                
+                <!-- If the professor has no classes, show "None" -->
+                <td>{{ professor[3] if professor[3] else "None" }}</td>
+
+                <!-- Form to Remove Professor with Confirmation Prompt -->
+                <td>
+                    <form action="{{ url_for('remove_professor', professor_id=professor[0]) }}" method="post"
+                        onsubmit="return confirm('Are you sure you want to remove {{ professor[1] }}?');">
+                        <button type="submit" class="btn btn-danger">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <!-- If no professors exist, show fallback row -->
+            <tr>
+                <td colspan="4">No professors available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Back to Admin Dashboard Link -->
+    <br>
+    <a href="{{ url_for('admin_dashboard') }}">⬅️ Back to Dashboard</a>
+
+</body>
+</html>

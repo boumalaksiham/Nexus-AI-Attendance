@@ -1,0 +1,11 @@
+numpy
+opencv-contrib-python
+opencv-python
+openpyxl
+pandas
+pillow
+pyttsx3
+Flask
+Flask-SQLAlchemy
+Flask-Bcrypt
+Flask-Login
