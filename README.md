@@ -1,5 +1,10 @@
 #  Nexus-AI — Multi-Agent Attendance Management System
 
+## Published-source status
+
+This repository preserves undergraduate thesis source, but the current checkout is not yet a complete runnable release. `app.py` imports `train_model`, which is absent, and imports `socketio` from itself before initialization. Restore the original training module and resolve initialization before following the application launch instructions below. The 15-participant thesis study does not establish reliability outside its tested lighting, distance, and pose conditions.
+
+
 > **Senior thesis project** — an AI-powered attendance platform that combines facial recognition, autonomous agents, and natural language processing to modernize attendance tracking in educational settings.
 
 ![Python](https://img.shields.io/badge/Python-3.12-blue?style=flat-square&logo=python)
@@ -225,5 +230,5 @@ M.S. Artificial Intelligence — Northeastern University, Khoury College | Expec
 
 *This project was completed as a senior undergraduate thesis.*
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=flat-square&logo=linkedin)](linkedin.com/in/siham-boumalak-11014b210)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/siham-boumalak/)
 [![GitHub](https://img.shields.io/badge/GitHub-boumalaksiham-181717?style=flat-square&logo=github)](https://github.com/boumalaksiham)
