@@ -1,234 +1,71 @@
-#  Nexus-AI — Multi-Agent Attendance Management System
+# Nexus-AI — Smart Attendance and Conversational Support
 
-## Published-source status
+An undergraduate honors-thesis prototype combining face recognition, attendance records, and specialized conversational agents. Flask serves student, professor and administrator interfaces; SQLite stores application records.
 
-This repository preserves undergraduate thesis source, but the current checkout is not yet a complete runnable release. `app.py` imports `train_model`, which is absent, and imports `socketio` from itself before initialization. Restore the original training module and resolve initialization before following the application launch instructions below. The 15-participant thesis study does not establish reliability outside its tested lighting, distance, and pose conditions.
+## What is included
 
+- Flask application routes and HTML/CSS/JavaScript dashboards.
+- Face-recognition source using OpenCV and dlib-based encodings.
+- Agent modules for query handling, retrieval, alerts, prediction and insights.
+- SQLite database initialization source.
 
-> **Senior thesis project** — an AI-powered attendance platform that combines facial recognition, autonomous agents, and natural language processing to modernize attendance tracking in educational settings.
+## Current release status
 
-![Python](https://img.shields.io/badge/Python-3.12-blue?style=flat-square&logo=python)
-![Flask](https://img.shields.io/badge/Flask-3.0-000000?style=flat-square&logo=flask)
-![OpenCV](https://img.shields.io/badge/OpenCV-4.9-5C3EE8?style=flat-square&logo=opencv)
-![OpenAI](https://img.shields.io/badge/OpenAI-GPT--3.5-412991?style=flat-square&logo=openai)
-![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=flat-square&logo=sqlite)
+The published source is **incomplete and does not currently provide a clean runnable release**:
 
----
+| Blocker | Evidence / action |
+|---|---|
+| Missing training module | `app.py` imports `train_model`, but that module is absent. Restore the original source. |
+| Circular initialization | `app.py` imports `socketio` from itself before creating it. Resolve initialization before launch. |
+| Incomplete environment | Imports include `face_recognition`, `flask_socketio`, `openai`, `dotenv` and `matplotlib`, which are absent from the root dependency list. Restore and verify the original environment. |
+| Enrollment/model artifacts | Use authorized enrollment data and the original training workflow; do not assume an empty checkout includes usable face encodings. |
 
-##  What is Nexus-AI?
+The setup below identifies intended entry points, rather than promising that these blockers are solved.
 
-Attendance tracking in universities is manual, time-consuming, and error-prone. Nexus-AI replaces that process with an intelligent multi-agent system that handles identity verification, absence detection, trend prediction, and natural language reporting — all while keeping humans in control.
+## Recognition and agent design
 
-**Nothing is triggered without user interaction.** Every AI decision is user-initiated, preserving privacy and accountability.
+Faces are represented by 128-dimensional embeddings. Matching compares Euclidean distance between enrolled and observed embeddings; distance matching is **performed on learned embeddings**, not an alternative to using them. The thesis used a 0.6 threshold, which must be validated for any new capture conditions.
 
----
+| Module | Responsibility |
+|---|---|
+| [agents/query_agent.py](agents/query_agent.py) | Interpret attendance questions |
+| [agents/retrieval_agent.py](agents/retrieval_agent.py) | Retrieve attendance information |
+| [agents/alert_agent.py](agents/alert_agent.py) | Repeated-absence alerts |
+| [agents/prediction_agent.py](agents/prediction_agent.py) | Attendance prediction logic |
+| [agents/insights_agent.py](agents/insights_agent.py) | Attendance summaries and insights |
+| [agents/coordinator.py](agents/coordinator.py) | Route requests among components |
 
-##  System Architecture
-```
-┌─────────────────────────────────────────────────────────────┐
-│                      Web Interface                           │
-│         Student │ Professor │ Admin Dashboards               │
-│    HTML, CSS, JavaScript, Bootstrap, GSAP                    │
-└───────────────────────┬─────────────────────────────────────┘
-                        │
-                        ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  Flask Backend (app.py)                      │
-│         Routes, session management, auth, API calls          │
-└───────────────────────┬─────────────────────────────────────┘
-                        │
-                        ▼
-┌─────────────────────────────────────────────────────────────┐
-│               Agent Coordinator (coordinator.py)             │
-│    Central hub — classifies intent, routes to correct agent  │
-└──────┬──────────┬──────────┬───────────┬────────────────────┘
-       │          │          │           │
-       ▼          ▼          ▼           ▼
-┌──────────┐ ┌─────────┐ ┌────────┐ ┌──────────┐ ┌──────────┐
-│  Alert   │ │Insights │ │Predict │ │  Query   │ │Retrieval │
-│  Agent   │ │  Agent  │ │ Agent  │ │  Agent   │ │  Agent   │
-└──────────┘ └─────────┘ └────────┘ └──────────┘ └──────────┘
-                        │
-                        ▼
-┌─────────────────────────────────────────────────────────────┐
-│                Facial Recognition Layer                      │
-│         OpenCV + Euclidean distance-based matching           │
-└─────────────────────────────────────────────────────────────┘
-                        │
-                        ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    SQLite Database                           │
-│         users │ attendance │ messages │ courses              │
-└─────────────────────────────────────────────────────────────┘
-```
+## Setup and restoration
 
----
-
-##  Multi-Agent System Design
-
-The core intelligence of Nexus-AI is a modular multi-agent architecture. Each agent has a single responsibility and is only invoked when needed — making the system modular, testable, and easy to extend.
-
-### Agent Coordinator
-The `AgentCoordinator` is the communication hub between the dashboard and all agents. It classifies user intent from natural language input and routes the request to the correct agent.
-```python
-coordinator = AgentCoordinator()
-response = coordinator.handle(user_input, student_id, course_id)
-```
-
-### Specialized Agents
-
-| Agent | Responsibility |
-|-------|---------------|
-| `alert_agent.py` | Sends alerts to professors when absences exceed a threshold |
-| `insights_agent.py` | Generates attendance summaries and graphs using GPT-3.5 |
-| `prediction_agent.py` | Predicts likelihood of future absences from historical data |
-| `query_agent.py` | Classifies intent, extracts keywords, routes to correct module |
-| `retrieval_agent.py` | Retrieves current absence counts per student per course |
-| `coordinator.py` | Central router — orchestrates all agent communication |
-
----
-
-##  Features
-
-###  Admin Dashboard
-- Assign professors to classrooms
-- View system activity logs
-- Create, edit, and delete users and courses
-- Export full attendance reports as CSV
-
-###  Professor Dashboard
-- Start and stop live facial recognition attendance sessions
-- View and filter attendance records
-- Handle student absence messages (manual or AI-assisted replies)
-- Generate GPT-powered attendance insights and trend reports
-
-###  Student Dashboard
-- Log in via **facial recognition** or password
-- Submit absence justifications with messaging
-- Chat with an AI agent about attendance
-- Monitor personal attendance records
-- Receive automated warnings after repeated absences
-
----
-
-##  Facial Recognition Pipeline
-```
-Camera feed (OpenCV)
-        │
-        ▼
-Frame capture + preprocessing
-        │
-        ▼
-Face detection (Haar cascade / HOG)
-        │
-        ▼
-Feature vector extraction
-        │
-        ▼
-Euclidean distance matching against enrolled faces
-        │
-        ▼
-Identity confirmed → attendance record created
-```
-
-Euclidean distance matching was chosen over deep learning embeddings to keep the system lightweight and deployable without GPU infrastructure, while still achieving reliable identity verification for classroom-scale use.
-
----
-
-##  Key Engineering Decisions
-
-**Why a multi-agent architecture?**
-A monolithic approach would tightly couple attendance tracking, prediction, alerting, and NLP into one unmanageable script. The agent pattern gives each concern its own module — making the system easier to debug, test, and extend independently.
-
-**Why user-triggered AI?**
-Full automation raises privacy concerns in educational settings. Every AI action (insights, alerts, predictions) requires explicit user initiation — keeping professors and admins in control of when the system acts.
-
-**Why Euclidean distance for facial recognition?**
-Deep learning embeddings (FaceNet, ArcFace) require GPU infrastructure and large labeled datasets. Euclidean distance on OpenCV feature vectors achieves reliable matching at classroom scale with zero hardware requirements.
-
-**Why SQLite?**
-For a single-institution deployment, SQLite provides zero-configuration persistence with full SQL expressiveness. The schema is designed for easy migration to PostgreSQL for multi-institution scaling.
-
----
-
-##  Project Structure
-```
-nexus-ai/
-├── app.py                  # Flask entry point, all routes
-├── agents/
-│   ├── coordinator.py      # Intent classification and routing
-│   ├── alert_agent.py      # Absence threshold alerts
-│   ├── insights_agent.py   # GPT-powered attendance summaries
-│   ├── prediction_agent.py # Future absence likelihood
-│   ├── query_agent.py      # NLP intent + keyword extraction
-│   └── retrieval_agent.py  # Absence count lookups
-├── facial_recognition/
-│   └── recognition.py      # OpenCV pipeline
-├── templates/              # HTML dashboards (student, professor, admin)
-├── static/                 # CSS, JS, GSAP animations
-├── database/
-│   └── nexus.db            # SQLite database
-└── requirements.txt
-```
-
----
-
-##  Quick Start
 ```bash
-# 1. Clone the repository
-git clone https://github.com/boumalaksiham/nexus-ai-attendance.git
-cd nexus-ai-attendance
-
-# 2. Set up virtual environment
-python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Add your OpenAI API key
-echo "OPENAI_API_KEY=your_key_here" > .env
-
-# 5. Run the app
-python app.py
+git clone https://github.com/boumalaksiham/Nexus-AI-Attendance.git
+cd Nexus-AI-Attendance
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
 ```
 
-Open **http://127.0.0.1:5000** in your browser.
+Use the thesis Python 3.12 environment as a starting point, then restore the missing dependencies/module and resolve initialization. dlib/face-recognition installation may require native build tools. OpenAI-dependent code also needs a compatible SDK and `OPENAI_API_KEY`; the repository does not pin a verified SDK version.
 
----
+After restoration, the application entry point is `python app.py`. Database schema source is [database.py](database.py). Read it and the application initialization paths before creating tables; this README does not assume that a preexisting thesis database is available.
 
-##  Tech Stack
+## Repository map
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | HTML, CSS, JavaScript, Bootstrap, GSAP |
-| Backend | Python, Flask |
-| Database | SQLite |
-| Facial Recognition | OpenCV, Euclidean distance matching |
-| AI / NLP | GPT-3.5 (OpenAI API), scikit-learn |
-| Auth | bcrypt password hashing |
-| Other | pandas, uuid, threading, python-dotenv |
+| Path | Contents |
+|---|---|
+| [app.py](app.py) | Flask application and supporting logic |
+| [database.py](database.py) | Database setup source |
+| [recognize_student_face.py](recognize_student_face.py) | Recognition workflow |
+| [agents/](agents/) | Conversational/attendance components |
+| [templates/](templates/) | Dashboard and authentication templates |
+| [static/](static/) | Styles, scripts and images |
 
----
+## Evaluation and limitations
 
-##  Roadmap
+The thesis study involved 15 participants. Recognition was sensitive to lighting, distance, angle and masks; it does not establish reliability across other classrooms or populations. A new evaluation should report capture conditions, counts, false accepts/rejects, attendance errors and failure cases separately. Prediction performance and face recognition are different tasks and should not share a single accuracy claim.
 
-- [ ] Upgrade facial recognition to deep learning embeddings (FaceNet)
-- [ ] Migrate to PostgreSQL for multi-institution support
-- [ ] Real-time WebSocket attendance updates
-- [ ] Mobile app for student check-in
-- [ ] Export reports as PDF with embedded charts
-- [ ] Role-based access control with JWT
+Treat this as research source until restoration and testing are complete. Before exposing a deployment, review the hardcoded session secret, debug configuration, permissive CORS, authentication paths and credential-related logging. Biometric enrollment and attendance records require appropriate handling; user initiation alone does not demonstrate privacy protection.
 
----
+## Next steps
 
-##  Author
-
-**Siham Boumalak**
-B.A. Computer Science & Data Science — The College of Wooster
-M.S. Artificial Intelligence — Northeastern University, Khoury College | Expected 2027
-
-*This project was completed as a senior undergraduate thesis.*
-
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/siham-boumalak/)
-[![GitHub](https://img.shields.io/badge/GitHub-boumalaksiham-181717?style=flat-square&logo=github)](https://github.com/boumalaksiham)
+Restore source and environment; verify database initialization; test dashboard and recognition flows with consented test data; add reproducible evaluation artifacts and appropriate tests. Documentation improvements do not repair the absent implementation.
