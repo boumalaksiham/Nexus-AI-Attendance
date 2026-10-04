@@ -2,6 +2,14 @@
 
 An undergraduate honors-thesis prototype combining face recognition, attendance records, and specialized conversational agents. Flask serves student, professor and administrator interfaces; SQLite stores application records.
 
+## Research question and thesis scope
+
+Can face-based attendance capture and conversational access to attendance records be combined in one classroom prototype, and where does the recognition workflow fail?
+
+The project connects three concerns: identifying an enrolled student, storing attendance, and answering questions about those records. A successful conversational answer cannot compensate for a mistaken recognition event; each part needs its own evaluation.
+
+The undergraduate thesis study involved **15 participants** and examined recognition under changing capture conditions. The public repository preserves application and agent source, but the study and a clean runnable release are different deliverables. The restoration requirements below describe the current checkout.
+
 ## What is included
 
 - Flask application routes and HTML/CSS/JavaScript dashboards.
