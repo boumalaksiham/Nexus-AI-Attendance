@@ -46,7 +46,6 @@ import subprocess
 from flask_socketio import SocketIO, emit
 from flask import current_app
 from flask import Flask, request, jsonify
-from app import socketio 
 
 # OpenAI API for integrating GPT-based models for NLP tasks
 import openai
@@ -62,15 +61,15 @@ from agents.coordinator import AgentCoordinator
 from recognize_student_face import recognize_student_face, recognize_faces_live
 
 # Custom module for training face recognition models
-from train_model import train_face_recognition
+import bcrypt
 # FLASK APP CONFIGURATION
 
 # Initialize Flask application
 app = Flask(__name__)  
-app.secret_key = "my_attendance_secret_key"  # Secret key for encrypting session data
+app.secret_key = os.environ.get("FLASK_SECRET_KEY") or os.urandom(32)
 
 # Enable WebSocket support for real-time communication and allow cross-origin requests
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app)
 
 # Path to SQLite database file where attendance data is stored
 DATABASE_PATH = "attendance_system.db"
@@ -165,9 +164,8 @@ def register_student_route():
         # Hash the password for secure storage
         hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
-        # Register the student in the database and retrain the face recognition model
+        # Registration stores pretrained face embeddings directly; no separate classifier training is required.
         if register_student(name, email, enrollment, hashed_password, professor_id):
-            train_face_recognition()  # Retrain the model with the new student data
             flash("✅ Registration successful! You can now log in.", "success")
             return redirect(url_for("student_login"))  # Redirect to student login page
         else:
@@ -396,7 +394,6 @@ def professor_login():
 
         if professor:
             stored_password = professor[3]
-            print(f"🛠 Stored Hashed Password: {stored_password}")
 
             # Verify password
             if bcrypt.checkpw(password.encode("utf-8"), stored_password.encode("utf-8")):
@@ -1567,134 +1564,12 @@ def allowed_file(filename):
 
 
 # Route to upload profile picture 
-@app.route('/upload-profile-picture', methods=['POST'])
-def upload_profile_picture():
-    """Handles student profile picture upload."""
-    if 'student_id' not in session:
-        flash("⚠️ You must be logged in!", "danger")
-        return redirect(url_for("student_login"))
-
-    student_id = session['student_id']
-
-    if 'profile_picture' not in request.files:
-        flash("⚠️ No file uploaded!", "danger")
-        return redirect(url_for("student_dashboard"))
-
-    file = request.files['profile_picture']
-    
-    if file.filename == '':
-        flash("⚠️ No file selected!", "danger")
-        return redirect(url_for("student_dashboard"))
-
-    if file and allowed_file(file.filename):
-        # Save the file using the student's ID as the filename
-        filename = secure_filename(f"{student_id}.{file.filename.rsplit('.', 1)[1].lower()}")
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(file_path)
-
-        # Update the student's profile picture in the database
-        with connect_db() as conn:
-            cursor = conn.cursor()
-            cursor.execute("UPDATE students SET profile_picture = ? WHERE enrollment = ?", (file_path, student_id))
-            conn.commit()
-
-        flash("✅ Profile picture updated successfully!", "success")
-        return redirect(url_for("student_dashboard"))
-
-    flash("❌ Invalid file type!", "danger")
-    return redirect(url_for("student_dashboard"))
 
 
 # Route to display student dashboard
-@app.route("/student-dashboard")
-def student_dashboard():
-    """Displays student dashboard with recent activities and messages."""
-    if 'student_id' not in session:
-        return redirect(url_for('student_login'))
-
-    student_id = session['student_id']
-
-    with connect_db() as conn:
-        cursor = conn.cursor()
-
-        # Fetch student details (name, profile picture, etc.)
-        cursor.execute("SELECT name, profile_picture, enrollment FROM students WHERE enrollment = ?", (student_id,))
-        student = cursor.fetchone()
-
-        if student:
-            student_name, profile_picture, student_enrollment = student
-        else:
-            student_name, profile_picture, student_enrollment = "Unknown", None, None
-
-        # Use default profile picture if none exists
-        profile_picture = profile_picture if profile_picture else url_for('static', filename='images/default-profile.png')
-
-        # Fetch student's enrolled classes
-        cursor.execute("""
-            SELECT c.id, c.class_name 
-            FROM classrooms c
-            JOIN student_classes sc ON c.id = sc.class_id
-            WHERE sc.enrollment = ?
-        """, (student_enrollment,))
-        
-        classes = cursor.fetchall()
-
-        # Fetch recent student activities
-        cursor.execute("""
-            SELECT activity, timestamp FROM student_activities 
-            WHERE student_id = ? ORDER BY timestamp DESC LIMIT 5
-        """, (student_id,))
-        recent_activities = cursor.fetchall()
-
-        # Fetch messages for the student (from both AI and professor)
-        cursor.execute("""
-            SELECT messages.id, messages.message, messages.timestamp, messages.sender_type
-            FROM messages
-            WHERE messages.student_enrollment = ?
-            AND messages.recipient_type = 'student'  -- Ensure we get messages for the student
-            ORDER BY messages.timestamp DESC;
-        """, (student_enrollment,))
-        
-        messages = [{"id": row[0], "message": row[1], "timestamp": row[2], "sender_type": row[3]} for row in cursor.fetchall()]
-
-    # Return the student dashboard template with the fetched data
-    return render_template("student_dashboard.html", 
-                           student_name=student_name, 
-                           profile_picture=profile_picture, 
-                           classes=classes, 
-                           recent_activities=recent_activities,
-                           messages=messages)  # Include the messages in the template
 
 
 # Route for changing profile picture 
-@app.route("/change-profile-picture", methods=["POST"])
-def change_profile_picture():
-    """Allows student to upload a new profile picture"""
-    if 'student_id' not in session:
-        return redirect(url_for('student_login'))
-
-    if 'profile_picture' not in request.files:
-        flash("No file selected!", "danger")
-        return redirect(url_for('student_dashboard'))
-
-    file = request.files['profile_picture']
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
-
-        # Update the database with the new profile picture
-        with connect_db() as conn:
-            cursor = conn.cursor()
-            cursor.execute("UPDATE students SET profile_picture = ? WHERE enrollment = ?", (filepath, session['student_id']))
-            conn.commit()
-
-        # Log profile picture change
-        log_student_activity(session['student_id'], "Updated profile picture")
-
-        flash("Profile picture updated successfully!", "success")
-    
-    return redirect(url_for('student_dashboard'))
 
 
 # Route for changing student password 
@@ -1716,6 +1591,8 @@ def change_password():
     # Get old and new passwords from form
     old_password = request.form.get("old_password")
     new_password = request.form.get("new_password")
+    if not old_password or not new_password:
+        return "Both current and new passwords are required", 400
 
     with connect_db() as conn:
         cursor = conn.cursor()
@@ -2005,29 +1882,6 @@ def change_profile_picture():
 
 
 # Route for changing student password 
-@app.route("/change-password", methods=["POST"])
-def change_password():
-    """Allows student to change password."""
-    if 'student_id' not in session:
-        return redirect(url_for('student_login'))
-
-    old_password = request.form.get("old_password")
-    new_password = request.form.get("new_password")
-
-    with connect_db() as conn:
-        cursor = conn.cursor()
-        cursor.execute("SELECT password FROM students WHERE enrollment = ?", (session['student_id'],))
-        current_password = cursor.fetchone()[0]
-
-        if old_password != current_password:
-            flash("Incorrect current password!", "danger")
-            return redirect(url_for('student_dashboard'))
-
-        cursor.execute("UPDATE students SET password = ? WHERE enrollment = ?", (new_password, session['student_id']))
-        conn.commit()
-
-    flash("Password updated successfully!", "success")
-    return redirect(url_for('student_dashboard'))
 
 # Delayed Notification for Professor 
 def delayed_notify_professor(student_enrollment, class_id):
@@ -2166,7 +2020,7 @@ def generate_professor_reply(student_message, student_enrollment, class_id):
     """
 
     # Step 3: Use GPT-4 to generate a response 
-    response = client.ChatCompletion.create(
+    response = openai.OpenAI().chat.completions.create(
         model="gpt-4",  # Using OpenAI's GPT-4
         messages=[
             {"role": "system", "content": "You are an AI assistant for professors, generating absence responses."},
@@ -2175,7 +2029,7 @@ def generate_professor_reply(student_message, student_enrollment, class_id):
     )
 
     # Step 4: Return the generated reply 
-    return response["choices"][0]["message"]["content"]
+    return response.choices[0].message.content
 
 
 # Route for Replying to Messages 
@@ -2763,7 +2617,6 @@ def get_student_by_enrollment(enrollment):
         row = cursor.fetchone()
 
     # Debugging output to trace what was returned from the DB
-    print(f"🛠 Database Query Result for {enrollment}: {row}")
 
     # Return result as a dictionary if found
     return {"Enrollment": row[0], "Name": row[1]} if row else None
@@ -2834,7 +2687,6 @@ def get_student_by_email(email):
         student = cursor.fetchone()
 
     # Print for debugging
-    print(f"🔍 Email Lookup for {email}: {student}")
     return student
 
 # This function is deprecated or unused (has logic issue—password key not fetched from DB)
@@ -2910,7 +2762,6 @@ def authenticate_admin(email, password):
 
     if admin:
         stored_hashed_password = admin["password"]
-        print(f"🛠 Stored Hashed Password: {stored_hashed_password}")
 
         # Compare provided password with hashed one from DB
         if bcrypt.checkpw(password.encode('utf-8'), stored_hashed_password.encode('utf-8')):
@@ -3383,4 +3234,4 @@ def generate_report():
     )
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=os.environ.get("FLASK_DEBUG") == "1")

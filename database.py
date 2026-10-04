@@ -18,14 +18,6 @@ This script only guarantees the creation of the essential programmatic ones.
 
 # Imports
 import sqlite3         # Built-in Python library to interact with SQLite databases
-import bcrypt          # Used to securely hash passwords (not used directly in this file, but used elsewhere in the system)
-import uuid            # Used for generating unique identifiers (for users or tokens)
-import cv2             # OpenCV – used for webcam access and face detection
-import face_recognition # For detecting and encoding facial features (used during student registration)
-import os              # Provides functions for interacting with the operating system (e.g. file paths)
-import json            # For reading/writing data in JSON format (not used directly in this file)
-import random          # Used for generating random values, if needed (e.g. temporary codes)
-import string          # For handling character sets when generating random strings
 
 
 # Path to the database file
@@ -57,7 +49,8 @@ def initialize_database():
                 email TEXT UNIQUE NOT NULL,
                 password TEXT NOT NULL,
                 profile_picture BLOB,        -- Stores the image data (optional)
-                face_encoding BLOB           -- Stores the encoded facial features
+                face_encoding BLOB,          -- Stores the encoded facial features
+                professor_id INTEGER
             )
         ''')
 
@@ -154,6 +147,10 @@ def initialize_database():
         cursor.execute("SELECT * FROM professor_codes WHERE code = 'PROF123'")
         if not cursor.fetchone():
             cursor.execute("INSERT INTO professor_codes (code) VALUES ('PROF123')")
+
+        columns = {row[1] for row in cursor.execute("PRAGMA table_info(students)")}
+        if "professor_id" not in columns:
+            cursor.execute("ALTER TABLE students ADD COLUMN professor_id INTEGER")
 
         # Commit all changes to the database
         conn.commit()

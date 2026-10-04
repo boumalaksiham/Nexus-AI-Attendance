@@ -19,16 +19,11 @@ The undergraduate thesis study involved **15 participants** and examined recogni
 
 ## Current release status
 
-The published source is **incomplete and does not currently provide a clean runnable release**:
+The application source now has one definition per route endpoint, no circular `socketio` import, and no missing `train_model` import. Live recognition loads class-specific embeddings from SQLite, with each vector mapped directly to its owner rather than assuming 20 captures per person. Enrollment already stores pretrained face embeddings directly; it does not require training another classifier. The student password-change route checks bcrypt hashes and stores a new hash. Session secrets are configurable, SocketIO uses its default same-origin policy, and debug mode is opt-in.
 
-| Blocker | Evidence / action |
-|---|---|
-| Missing training module | `app.py` imports `train_model`, but that module is absent. Restore the original source. |
-| Circular initialization | `app.py` imports `socketio` from itself before creating it. Resolve initialization before launch. |
-| Incomplete environment | Imports include `face_recognition`, `flask_socketio`, `openai`, `dotenv` and `matplotlib`, which are absent from the root dependency list. Restore and verify the original environment. |
-| Enrollment/model artifacts | Use authorized enrollment data and the original training workflow; do not assume an empty checkout includes usable face encodings. |
+The dependency manifest now includes the imported face-recognition, SocketIO, OpenAI, dotenv, matplotlib, and bcrypt packages. Database setup includes the `students.professor_id` field used by enrollment and adds it non-destructively to older databases.
 
-The setup below identifies intended entry points, rather than promising that these blockers are solved.
+**Verification scope:** public-page startup and password-change regression tests use a stub for the native face-recognition import and a temporary SQLite database. They do not exercise camera capture, real biometric matching, or provider API calls. Other dashboard/message schema paths and live workflows still need integration testing before a clean runnable release can be claimed.
 
 ## Recognition and agent design
 
@@ -53,9 +48,9 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-Use the thesis Python 3.12 environment as a starting point, then restore the missing dependencies/module and resolve initialization. dlib/face-recognition installation may require native build tools. OpenAI-dependent code also needs a compatible SDK and `OPENAI_API_KEY`; the repository does not pin a verified SDK version.
+Use Python 3.12 as a starting point and install the updated manifest. dlib/face-recognition installation may require native build tools. OpenAI-dependent code also needs a compatible SDK and `OPENAI_API_KEY`; the repository does not pin a verified SDK version.
 
-After restoration, the application entry point is `python app.py`. Database schema source is [database.py](database.py). Read it and the application initialization paths before creating tables; this README does not assume that a preexisting thesis database is available.
+Set `OPENAI_API_KEY` for the agent clients and a persistent `FLASK_SECRET_KEY` for local sessions. The application entry point is `python app.py`; `FLASK_DEBUG=1` enables development debug mode. Database schema source is [database.py](database.py). Read it and the application initialization paths before creating tables; this README does not assume that a preexisting thesis database is available.
 
 ## Repository map
 
@@ -72,8 +67,16 @@ After restoration, the application entry point is `python app.py`. Database sche
 
 The thesis study involved 15 participants. Recognition was sensitive to lighting, distance, angle and masks; it does not establish reliability across other classrooms or populations. A new evaluation should report capture conditions, counts, false accepts/rejects, attendance errors and failure cases separately. Prediction performance and face recognition are different tasks and should not share a single accuracy claim.
 
-Treat this as research source until restoration and testing are complete. Before exposing a deployment, review the hardcoded session secret, debug configuration, permissive CORS, authentication paths and credential-related logging. Biometric enrollment and attendance records require appropriate handling; user initiation alone does not demonstrate privacy protection.
+Treat this as research source until restoration and testing are complete. Before exposing a deployment, review authentication, authorization, database schema coverage, and remaining account-data logging. Biometric enrollment and attendance records require appropriate handling; user initiation alone does not demonstrate privacy protection.
 
 ## Next steps
 
-Restore source and environment; verify database initialization; test dashboard and recognition flows with consented test data; add reproducible evaluation artifacts and appropriate tests. Documentation improvements do not repair the absent implementation.
+Test every dashboard/message schema path, camera enrollment, and recognition flow with consented test data. Add reproducible study artifacts and evaluate provider-dependent agent behavior separately from recognition.
+
+## Regression checks
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+The checks use temporary records, verify a rejected old password leaves its hash unchanged, and verify a successful change stores a bcrypt hash. Embedding ownership is checked with unequal capture counts. Enrollment coverage is labeled separately from biometric accuracy. No cameras or billable provider requests are used.

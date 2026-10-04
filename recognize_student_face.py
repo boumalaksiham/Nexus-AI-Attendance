@@ -141,23 +141,24 @@ def recognize_student_face():
     return None
 
 
-# WEBSOCKET SETUP
-
-# This enables Flask to communicate with clients in real-time (e.g., stream video frames).
-socketio = SocketIO(cors_allowed_origins="*")
-
-
-# LOAD STORED FACE ENCODINGS FROM FILE
-
-# We read the pre-saved face encodings from a JSON file for use in live detection
-with open("face_recognition_model.json", "r") as f:
-    model_data = json.load(f)
-
-# The encodings are stored as lists of vectors (128-d), we convert them to NumPy arrays
-known_face_encodings = np.array([np.array(enc_list) for enc_list in model_data["encodings"]]).reshape(-1, 128)
-
-# Also load the list of student enrollment IDs associated with the encodings
-known_face_enrollments = model_data["enrollments"]
+def load_class_encodings(class_id):
+    """Load valid enrollment embeddings, keeping one owner per vector."""
+    vectors, owners = [], []
+    with connect_db() as conn:
+        rows = conn.execute("""SELECT s.enrollment, s.face_encoding FROM students s
+            JOIN student_classes c ON c.enrollment = s.enrollment
+            WHERE c.class_id = ?""", (class_id,)).fetchall()
+    for enrollment, encoded in rows:
+        try:
+            candidates = json.loads(encoded)
+            for candidate in candidates:
+                vector = np.asarray(candidate, dtype=np.float64)
+                if vector.shape == (128,) and np.isfinite(vector).all():
+                    vectors.append(vector)
+                    owners.append(enrollment)
+        except (TypeError, ValueError):
+            continue
+    return np.asarray(vectors, dtype=np.float64).reshape(-1, 128), owners
 
 
 # GLOBAL CAMERA INSTANCE FOR LIVE VIDEO (used later)
@@ -189,7 +190,7 @@ def recognize_faces_live(app, socketio, class_id, professor_id):
     - A global stop flag is triggered (`stop_flag = True`)
 
     Requirements:
-    - The global `known_face_encodings` and `known_face_enrollments` must be loaded before calling this.
+    - Encodings are refreshed from the enrolled students in the database.
     - The global `cam` and `SESSION_RECOGNIZED_STUDENTS` are used and managed here.
 
     Returns:
@@ -198,6 +199,10 @@ def recognize_faces_live(app, socketio, class_id, professor_id):
 
     # Make variables global so we can share them between threads
     global cam, stop_flag, SESSION_RECOGNIZED_STUDENTS
+
+    known_face_encodings, known_face_enrollments = load_class_encodings(class_id)
+    if len(known_face_encodings) == 0:
+        return
 
     # Reset the stop flag to make sure the loop runs
     stop_flag = False
@@ -252,13 +257,8 @@ def recognize_faces_live(app, socketio, class_id, professor_id):
 
                 # If we have a good match...
                 if best_match_index is not None and matches[best_match_index]:
-                    # Each student may have 20 encodings → figure out which student it is
-                    student_index = best_match_index // 20
-
-                    # Get the student's enrollment number
-                    if student_index < len(known_face_enrollments):
-                        enrollment = known_face_enrollments[student_index]
-                        recognized_students.append(enrollment)
+                    enrollment = known_face_enrollments[best_match_index]
+                    recognized_students.append(enrollment)
 
             # Send the current video frame and recognized students to the frontend
             send_frame_to_frontend(app, socketio, frame, recognized_students, class_id)
@@ -273,8 +273,8 @@ def recognize_faces_live(app, socketio, class_id, professor_id):
             mark_attendance_in_db(class_id, professor_id, recognized_students)
 
             # Compute recognition accuracy for debugging
-            accuracy = compute_recognition_accuracy(class_id, recognized_students)
-            print(f"✅ Facial Recognition Accuracy for class {class_id}: {accuracy:.2f}%")
+            accuracy = compute_enrollment_coverage(class_id, recognized_students)
+            print(f"✅ Enrollment coverage for class {class_id}: {accuracy:.2f}%")
 
             # Exit if user presses 'q' or if stop_flag was externally set
             if cv2.waitKey(1) & 0xFF == ord('q') or stop_flag:
@@ -291,17 +291,12 @@ def recognize_faces_live(app, socketio, class_id, professor_id):
         print("✅ Background task fully stopped.")
 
 
-def compute_recognition_accuracy(class_id, recognized_students):
-    """
-    Compute Facial Recognition Accuracy for a Class
+def compute_enrollment_coverage(class_id, recognized_students):
+    """Percentage of enrolled students recognized; not biometric accuracy.
 
-    This function compares the list of students recognized by the system in a session
-    (`recognized_students`) with the list of students officially enrolled in the class (`class_id`)
-    and computes how accurate the face recognition was.
-
-    It helps assess how many present students were correctly identified by the system.
+    Enrollment is not ground truth for who is present or correctly identified.
     """
-    
+
     with sqlite3.connect("attendance_system.db") as conn:
         cursor = conn.cursor()
         
@@ -315,7 +310,7 @@ def compute_recognition_accuracy(class_id, recognized_students):
         
         # Compute accuracy (percentage of correct recognitions)
         accuracy = (correctly_recognized / total_present) * 100 if total_present > 0 else 0
-        print(f"🎯 Recognition Accuracy: {accuracy:.2f}%")
+        print(f"🎯 Enrollment coverage: {accuracy:.2f}%")
         
         return accuracy
 
